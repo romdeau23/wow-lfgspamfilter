@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+ xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+    <Button frameStrata="TOOLTIP" name="LFGSpamFilterBanButton" inherits="UIPanelCloseButton" hidden="true">
+        <Scripts>
+            <OnClick>
+                LFGSpamFilterAddon:onBanButtonClick()
+                self:Hide()
+            </OnClick>
+            <OnLeave>
+                self:Hide()
+            </OnLeave>
+        </Scripts>
+    </Button>
+
+</Ui>
