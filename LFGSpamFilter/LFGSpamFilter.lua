@@ -5,6 +5,7 @@ LFGSpamFilterAddon = LFGSpamFilter
 LFGSpamFilter.frame = CreateFrame('Frame')
 LFGSpamFilter.ready = false
 LFGSpamFilter.splash = false
+LFGSpamFilter.configVersion = 2
 LFGSpamFilter.eventHandlers = {
     ADDON_LOADED = 'onAddonLoaded',
     LFG_LIST_SEARCH_RESULT_UPDATED = 'onSearchResultUpdated',
@@ -33,6 +34,12 @@ LFGSpamFilter.commands = {
         method = 'runReportCommand',
         acceptsArgument = true,
     },
+    blacklist = {
+        usage = 'on|off',
+        help = 'enable or disable blacklist-based filtering',
+        method = 'runBlacklistCommand',
+        acceptsArgument = true,
+    },
     ['max-age'] = {
         usage = '<hours>',
         help = 'filter groups older than this (0 to disable)',
@@ -49,9 +56,9 @@ LFGSpamFilter.commands = {
         help = 'undo the last ban',
         method = 'runUndoCommand',
     },
-    clear = {
+    ['clear-blacklist'] = {
         help = 'clear the blacklist',
-        method = 'runClearCommand',
+        method = 'runClearBlacklistCommand',
     },
     ['factory-reset'] = {
         help = 'reset all options and data',
@@ -62,10 +69,11 @@ LFGSpamFilter.commandList = {
     'info',
     'toggle',
     'report',
+    'blacklist',
     'max-age',
     'no-voice',
     'undo',
-    'clear',
+    'clear-blacklist',
     'factory-reset',
 }
 
@@ -106,14 +114,14 @@ function LFGSpamFilter:onAddonLoaded(loadedAddonName)
 end
 
 function LFGSpamFilter:initConfiguration()
-    if LFGSpamFilterAddonConfig == nil then
+    if LFGSpamFilterAddonConfig == nil or not pcall(self.migrateConfiguration, self) then
         self:setDefaultConfiguration()
     end
 end
 
 function LFGSpamFilter:setDefaultConfiguration()
     LFGSpamFilterAddonConfig = {
-        version = 1,
+        version = self.configVersion,
         enabled = true,
         report = true,
         blacklist = {},
@@ -126,6 +134,16 @@ function LFGSpamFilter:setDefaultConfiguration()
         noVoice = true,
         lastMaintenance = time(),
     }
+end
+
+function LFGSpamFilter:migrateConfiguration()
+    for from = LFGSpamFilterAddonConfig.version, self.configVersion - 1 do
+        if from == 1 then
+            LFGSpamFilterAddonConfig.blacklistEnabled = true
+        end
+    end
+
+    LFGSpamFilterAddonConfig.version = self.configVersion
 end
 
 function LFGSpamFilter:initSlashCommand()
@@ -193,12 +211,13 @@ function LFGSpamFilter:runInfoCommand()
     self:say('configuration:')
     print('|cff47bbfffiltering:|r', self:formatBool(LFGSpamFilterAddonConfig.enabled))
     print('|cff47bbffreporting:|r', self:formatBool(LFGSpamFilterAddonConfig.report))
+    print('|cff47bbffblacklist:|r', self:formatBool(LFGSpamFilterAddonConfig.blacklistEnabled))
     if LFGSpamFilterAddonConfig.maxAge > 0 then print('|cff47bbffmax age:|r', string.format('|cff00ff00%.2f hours|r', LFGSpamFilterAddonConfig.maxAge / 3600))
     else print('|cff47bbffmax age:|r', self:formatBool(false)) end
     print('|cff47bbffno voice:|r', self:formatBool(LFGSpamFilterAddonConfig.noVoice))
     self:say('statistics:')
     print('|cff47bbffreports:|r', LFGSpamFilterAddonConfig.stats.reports)
-    print('|cff47bbfffiltered groups:|r', LFGSpamFilterAddonConfig.stats.filtered)
+    print('|cff47bbfffiltered entries:|r', LFGSpamFilterAddonConfig.stats.filtered)
     print('|cff47bbffblacklisted players:|r', self:getBlacklistSize())
 end
 
@@ -215,6 +234,11 @@ end
 function LFGSpamFilter:runReportCommand(argument)
     LFGSpamFilterAddonConfig.report = self:parseBoolCommandArgument(argument)
     self:say('reporting is now %s', self:formatBool(LFGSpamFilterAddonConfig.report))
+end
+
+function LFGSpamFilter:runBlacklistCommand(argument)
+    LFGSpamFilterAddonConfig.blacklistEnabled = self:parseBoolCommandArgument(argument)
+    self:say('blacklist usage is now %s', self:formatBool(LFGSpamFilterAddonConfig.blacklistEnabled))
 end
 
 function LFGSpamFilter:runMaxAgeCommand(argument)
@@ -257,7 +281,7 @@ function LFGSpamFilter:runUndoCommand()
     self:say('undid last ban')
 end
 
-function LFGSpamFilter:runClearCommand()
+function LFGSpamFilter:runClearBlacklistCommand()
     local numBlacklisted = self:getBlacklistSize()
     self:clearBlacklist()
     self:say('removed %d players from blacklist', numBlacklisted)
@@ -356,7 +380,8 @@ function LFGSpamFilter:accept(info)
             or LFGSpamFilterAddonConfig.maxAge == 0
         )
         and (
-            info.leaderName == nil
+            not LFGSpamFilterAddonConfig.blacklistEnabled
+            or info.leaderName == nil
             or not self:isBlacklisted(self:normalizePlayerName(info.leaderName))
         )
         and (
@@ -480,9 +505,9 @@ function LFGSpamFilter:removeFromBlacklist(normalizedName)
 end
 
 function LFGSpamFilter:isBlacklisted(normalizedName)
-    if LFGSpamFilterAddonConfig[normalizedName] then
+    if LFGSpamFilterAddonConfig.blacklist[normalizedName] then
         -- update last seen time
-        LFGSpamFilterAddonConfig[normalizedName] = time()
+        LFGSpamFilterAddonConfig.blacklist[normalizedName] = time()
 
         return true
     end
