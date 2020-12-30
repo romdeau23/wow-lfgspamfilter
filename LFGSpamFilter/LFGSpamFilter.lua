@@ -152,7 +152,7 @@ function LFGSpamFilter:initSlashCommand()
     SLASH_LFG_SPAM_FILTER3 = '/lsf'
 
     SlashCmdList.LFG_SPAM_FILTER = function(input)
-        input = trim(input)
+        input = strtrim(input)
 
         local sepStart, sepEnd = string.find(input, '%s+')
         local command, argument
