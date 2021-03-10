@@ -1,6 +1,6 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: LFGSpamFilter
-## Version: 0.2.0
+## Version: 0.3.0
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering, blacklisting and quick reporting
 ## SavedVariables: LFGSpamFilterAddonConfig
