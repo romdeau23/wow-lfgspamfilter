@@ -358,7 +358,7 @@ end
 function LFGSpamFilter:maintenance()
     -- run maintenance once a week
     if time() - LFGSpamFilterAddonConfig.lastMaintenance > 604800 then
-        self:cleanupBlacklist(7776000) -- remove blacklisted players not seen for over 3 months
+        self:cleanupBlacklist(31536000) -- remove blacklisted players not seen for over a year
         LFGSpamFilterAddonConfig.lastMaintenance = time()
     end
 end
