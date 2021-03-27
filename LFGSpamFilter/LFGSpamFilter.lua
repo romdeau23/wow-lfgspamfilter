@@ -4,9 +4,9 @@ LFGSpamFilterAddon = LFGSpamFilter
 
 LFGSpamFilter.frame = CreateFrame('Frame')
 LFGSpamFilter.ready = false
-LFGSpamFilter.splash = false
+LFGSpamFilter.splashed = false
 LFGSpamFilter.reportingGroup = false
-LFGSpamFilter.configVersion = 3
+LFGSpamFilter.configVersion = 4
 LFGSpamFilter.eventHandlers = {
     ADDON_LOADED = 'onAddonLoaded',
     LFG_LIST_SEARCH_RESULT_UPDATED = 'onSearchResultUpdated',
@@ -73,6 +73,12 @@ LFGSpamFilter.commands = {
         help = 'reset all options and data',
         method = 'runFactoryResetCommand',
     },
+    splash = {
+        usage = 'on|off',
+        help = 'enable or disable the chat notification',
+        method = 'runSplashCommand',
+        acceptsArgument = true,
+    },
 }
 LFGSpamFilter.commandList = {
     'info',
@@ -85,6 +91,7 @@ LFGSpamFilter.commandList = {
     'unban',
     'clear-blacklist',
     'factory-reset',
+    'splash',
 }
 
 function LFGSpamFilter:say(msg, ...)
@@ -145,6 +152,7 @@ function LFGSpamFilter:setDefaultConfiguration()
         maxAge = 4 * 3600,
         noVoice = true,
         lastMaintenance = time(),
+        splash = true,
     }
 end
 
@@ -159,6 +167,8 @@ function LFGSpamFilter:migrateConfiguration()
             if LFGSpamFilterAddonConfig.blacklistEnabled ~= false then
                 LFGSpamFilterAddonConfig.blacklistEnabled = true
             end
+        elseif from == 3 then
+            LFGSpamFilterAddonConfig.splash = true
         end
     end
 
@@ -328,6 +338,11 @@ function LFGSpamFilter:runFactoryResetCommand()
     self:updateLfgList()
 end
 
+function LFGSpamFilter:runSplashCommand(argument)
+    LFGSpamFilterAddonConfig.splash = self:parseBoolCommandArgument(argument)
+    self:say('splash message is now %s', self:formatBool(LFGSpamFilterAddonConfig.splash))
+end
+
 function LFGSpamFilter:parseBoolCommandArgument(argument)
     if argument == 'on' or argument == '1' then
         return true
@@ -369,7 +384,7 @@ function LFGSpamFilter:doSplash()
         GetAddOnMetadata(addonName, 'Version'),
         GetAddOnMetadata(addonName, 'Author')
     )
-    self.splash = true
+    self.splashed = true
 end
 
 function LFGSpamFilter:filter(results)
@@ -377,7 +392,7 @@ function LFGSpamFilter:filter(results)
         return
     end
 
-    if not self.splash then
+    if not self.splashed and LFGSpamFilterAddonConfig.splash then
         self:doSplash()
     end
 
