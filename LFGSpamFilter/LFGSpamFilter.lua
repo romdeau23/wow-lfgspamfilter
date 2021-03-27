@@ -20,7 +20,7 @@ LFGSpamFilter.commands = {
         method = 'runHelpCommand',
     },
     info = {
-        help = 'show configuration and stats',
+        help = 'show filter configuration and stats',
         method = 'runInfoCommand',
     },
     toggle = {
@@ -237,14 +237,13 @@ function LFGSpamFilter:runHelpCommand()
 end
 
 function LFGSpamFilter:runInfoCommand()
-    self:say('configuration:')
+    self:say('filter configuration:')
     print('|cff47bbfffiltering:|r', self:formatBool(LFGSpamFilterAddonConfig.enabled))
     print('|cff47bbffreporting:|r', self:formatBool(LFGSpamFilterAddonConfig.report))
     print('|cff47bbffblacklist:|r', self:formatBool(LFGSpamFilterAddonConfig.blacklistEnabled))
     if LFGSpamFilterAddonConfig.maxAge > 0 then print('|cff47bbffmax age:|r', string.format('|cff00ff00%.2f hours|r', LFGSpamFilterAddonConfig.maxAge / 3600))
     else print('|cff47bbffmax age:|r', self:formatBool(false)) end
     print('|cff47bbffno voice:|r', self:formatBool(LFGSpamFilterAddonConfig.noVoice))
-    print('|cff47bbffbutton:|r', self:formatBool(LFGSpamFilterAddonConfig.button))
     self:say('statistics:')
     print('|cff47bbffreports:|r', LFGSpamFilterAddonConfig.stats.reports)
     print('|cff47bbfffilter hits:|r', LFGSpamFilterAddonConfig.stats.filtered)
