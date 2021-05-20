@@ -9,7 +9,6 @@ LFGSpamFilter.reportingGroup = false
 LFGSpamFilter.configVersion = 4
 LFGSpamFilter.eventHandlers = {
     ADDON_LOADED = 'onAddonLoaded',
-    LFG_LIST_SEARCH_RESULT_UPDATED = 'onSearchResultUpdated',
 }
 LFGSpamFilter.hookCache = {
     onButtonEnter = function (button) LFGSpamFilter:onButtonEnter(button) end,
@@ -366,6 +365,7 @@ function LFGSpamFilter:initHooks()
     hooksecurefunc('LFGListUtil_SortSearchResults', function (results) self:filter(results) end)
     hooksecurefunc('LFGListSearchEntry_Update', function (button) self:updateButton(button) end)
     hooksecurefunc(C_LFGList, 'ReportSearchResult', function (id, reason) self:postReportGroup(id, reason) end)
+    hooksecurefunc('LFGListSearchPanel_UpdateResults', function () self:postResultsUpdate() end)
     LFGListFrame:HookScript('OnHide', function () self:onLfgListHide() end)
 end
 
@@ -440,16 +440,6 @@ function LFGSpamFilter:accept(info)
         )
 end
 
-function LFGSpamFilter:onSearchResultUpdated(id)
-    if self.ready and self:isLfgListOpen() then
-        local info = C_LFGList.GetSearchResultInfo(id)
-
-        if info and not self:accept(info) then
-            self:updateLfgList()
-        end
-    end
-end
-
 function LFGSpamFilter:updateButton(button)
     if not button._LFGSpamFilterHooked then
         button:HookScript('OnEnter', self.hookCache.onButtonEnter)
@@ -497,7 +487,6 @@ function LFGSpamFilter:updateLfgList()
     end
 
     LFGListSearchPanel_UpdateResultList(LFGListFrame.SearchPanel)
-    LFGListSearchPanel_UpdateResults(LFGListFrame.SearchPanel)
 end
 
 function LFGSpamFilter:normalizePlayerName(name)
@@ -546,6 +535,11 @@ function LFGSpamFilter:postReportGroup(id, reason)
     if not self.reportingGroup then
         self:banGroup(id)
     end
+end
+
+function LFGSpamFilter:postResultsUpdate()
+    -- hide ban button when results are updated as it may be attached to a different group now
+    LFGSpamFilterBanButton:Hide()
 end
 
 function LFGSpamFilter:blacklistPlayer(normalizedName)
