@@ -6,7 +6,7 @@
     <Button frameStrata="TOOLTIP" name="LFGSpamFilterQuickReportButton" inherits="UIPanelCloseButtonNoScripts" hidden="true">
         <Scripts>
             <OnClick>
-                LFGSpamFilterAddon.ui.onQuickReportButtonClick()
+                LFGSpamFilterAddon.ui.quickReport.onClick()
                 self:Hide()
             </OnClick>
             <OnLeave>
@@ -15,7 +15,7 @@
         </Scripts>
     </Button>
 
-    <Button name="LFGSpamFilterStatusButton" registerForClicks="LeftButtonUp, RightButtonUp" hidden="true">
+    <Button name="LFGSpamFilterStatusButton" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true">
         <Size x="32" y="32"/>
         <Layers>
             <Layer textureSubLevel="5">
@@ -26,7 +26,6 @@
                     </Anchors>
                 </Texture>
             </Layer>
-
             <Layer textureSubLevel="6">
                 <Texture parentKey="TextFrame" file="Interface\Buttons\UI-Quickslot">
                     <Size x="20" y="20"/>
@@ -35,7 +34,6 @@
                     </Anchors>
                 </Texture>
             </Layer>
-
             <Layer textureSubLevel="7">
                 <FontString parentKey="Text" inherits="GameFontNormalSmall" text="0">
                     <Size>
@@ -57,14 +55,21 @@
                 GameTooltip:SetText(self.tooltip)
             </OnEnter>
             <OnClick>
-                LFGSpamFilterAddon.ui.onStatusButtonClick(button)
+                LFGSpamFilterAddon.ui.statusButton.onClick(button)
                 GameTooltip_Hide()
             </OnClick>
             <OnLeave function="GameTooltip_Hide"/>
         </Scripts>
     </Button>
 
-    <Frame name="LFGSpamFilterOptions" enableMouse="true" hidden="true" frameStrata="DIALOG" inherits="TooltipBackdropTemplate">
+    <Frame name="LFGSpamFilterCheckboxTemplate" inherits="OptionsCheckButtonTemplate" virtual="true">
+        <Size x="24" y="24"/>
+        <Scripts>
+            <OnClick><!-- noop --></OnClick>
+        </Scripts>
+    </Frame>
+
+    <Frame name="LFGSpamFilterOptions" parent="UIParent" enableMouse="true" hidden="true" frameStrata="DIALOG" inherits="TooltipBackdropTemplate">
         <Size x="192" y="285"/>
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="LFGSpamFilterStatusButton" x="0" y="1"/>
@@ -77,8 +82,11 @@
         </KeyValues>
         <Scripts>
             <OnShow>
-                LFGSpamFilterAddon.ui.updateOptionsUi()
+                LFGSpamFilterAddon.ui.options.load()
             </OnShow>
+            <OnHide>
+                LFGSpamFilterAddon.ui.options.apply()
+            </OnHide>
         </Scripts>
         <Layers>
             <Layer>
@@ -105,7 +113,7 @@
                 <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="hours max group age">
                     <Size x="0" y="10"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-82"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="57" y="-82"/>
                     </Anchors>
                 </FontString>
                 <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="Options">
@@ -145,31 +153,19 @@
             </Layer>
         </Layers>
         <Frames>
-            <CheckButton parentKey="FilterCategory" inherits="OptionsCheckButtonTemplate">
-                <Size x="24" y="24"/>
+            <CheckButton parentKey="FilterCategory" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="12" y="-10"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick>
-                        LFGSpamFilterAddon.ui.onOptionNotify('FilterCategory')
-                    </OnClick>
-                </Scripts>
             </CheckButton>
-            <CheckButton parentKey="NoVoice" inherits="OptionsCheckButtonTemplate">
-                <Size x="24" y="24"/>
+            <CheckButton parentKey="NoVoice" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-54"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick>
-                        LFGSpamFilterAddon.ui.onOptionNotify('NoVoice')
-                    </OnClick>
-                </Scripts>
             </CheckButton>
-            <EditBox parentKey="MaxAge" inherits="InputBoxTemplate" autoFocus="false" letters="2" numeric="true">
+            <EditBox parentKey="MaxAge" inherits="InputBoxTemplate" autoFocus="false" letters="3">
                 <Size>
-                    <AbsDimension x="15" y="20"/>
+                    <AbsDimension x="25" y="20"/>
                 </Size>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="29" y="-76"/>
@@ -181,48 +177,25 @@
                     <OnEnterPressed>
                         self:ClearFocus()
                     </OnEnterPressed>
-                    <OnTextChanged>
-                        if not LFGSpamFilterOptions.updating then
-                            LFGSpamFilterAddon.ui.onOptionNotify('MaxAge')
-                        end
-                    </OnTextChanged>
                 </Scripts>
                 <TextInsets>
                     <AbsInset left="-1.5" right="-1.5"/>
                 </TextInsets>
             </EditBox>
-            <CheckButton parentKey="Report" inherits="OptionsCheckButtonTemplate">
-                <Size x="24" y="24"/>
+            <CheckButton parentKey="Report" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-122"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick>
-                        LFGSpamFilterAddon.ui.onOptionNotify('Report')
-                    </OnClick>
-                </Scripts>
             </CheckButton>
-            <CheckButton parentKey="QuickReport" inherits="OptionsCheckButtonTemplate">
-                <Size x="24" y="24"/>
+            <CheckButton parentKey="QuickReport" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-144"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick>
-                        LFGSpamFilterAddon.ui.onOptionNotify('QuickReport')
-                    </OnClick>
-                </Scripts>
             </CheckButton>
-            <CheckButton parentKey="FilterBanned" inherits="OptionsCheckButtonTemplate">
-                <Size x="24" y="24"/>
+            <CheckButton parentKey="FilterBanned" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-190"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick>
-                        LFGSpamFilterAddon.ui.onOptionNotify('FilterBanned')
-                    </OnClick>
-                </Scripts>
             </CheckButton>
             <Button parentKey="UnbanAll" inherits="UIPanelButtonGrayTemplate" text="Unban all">
                 <Size x="73" y="20"/>
@@ -231,7 +204,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        LFGSpamFilterAddon.ui.onOptionNotify('UnbanAll')
+                        LFGSpamFilterAddon.ui.options.onUnbanAllClick()
                     </OnClick>
                 </Scripts>
                 <NormalFont style="GameFontNormalSmall"/>
@@ -245,14 +218,14 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        LFGSpamFilterAddon.ui.onOptionNotify('UnbanLast')
+                        LFGSpamFilterAddon.ui.options.onUnbanLastClick()
                     </OnClick>
                 </Scripts>
                 <NormalFont style="GameFontNormalSmall"/>
                 <HighlightFont style="GameFontHighlightSmall"/>
                 <DisabledFont style="GameFontDisableSmall"/>
             </Button>
-            <Button parentKey="OK" inherits="UIPanelButtonNoTooltipTemplate" text="OK">
+            <Button parentKey="OkButton" inherits="UIPanelButtonNoTooltipTemplate" text="OK">
                 <Size x="151" y="20"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-250"/>

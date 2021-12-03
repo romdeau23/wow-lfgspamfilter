@@ -3,29 +3,13 @@ local main, private = addon.module('main')
 local reportingGroup = false
 
 function main.init()
-    private.initHooks()
-    private.registerSlashCommands()
+    hooksecurefunc('LFGListUtil_SortSearchResults', private.filter)
+    hooksecurefunc(C_LFGList, 'ReportSearchResult', private.onReport)
 end
 
 function main.quickReport(resultId)
     private.banGroupLeader(resultId)
     private.reportGroup(resultId)
-end
-
-function private.initHooks()
-    hooksecurefunc('LFGListUtil_SortSearchResults', private.filter)
-    hooksecurefunc(C_LFGList, 'ReportSearchResult', private.onReport)
-end
-
--- TODO: remove in a future version
-function private.registerSlashCommands()
-    SLASH_LFG_SPAM_FILTER1 = '/lfgspamfilter'
-    SLASH_LFG_SPAM_FILTER2 = '/lfgsf'
-    SLASH_LFG_SPAM_FILTER3 = '/lsf'
-
-    SlashCmdList.LFG_SPAM_FILTER = function ()
-        addon.ui.message('LFGSpamFilter no longer uses slash commands. Use the new status button above the LFG filter instead.')
-    end
 end
 
 function private.filter(results)
@@ -36,10 +20,11 @@ function private.filter(results)
 
     -- check ignored categories
     if addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory()) then
-        addon.ui.updateStatusButton(false, 0)
+        addon.ui.statusButton.update(false, 0)
         return
     end
 
+    -- filter results into another table
     local accepted = {}
     local numAccepted = 0
     local numResults = #results
@@ -67,26 +52,27 @@ function private.filter(results)
             results[i] = accepted[i]
         end
 
+        LFGListFrame.SearchPanel.totalResults = numAccepted
         addon.config.addToStats('filtered', numFiltered)
     end
 
-    addon.ui.updateStatusButton(true, numFiltered)
+    addon.ui.statusButton.update(true, numFiltered)
 end
 
 function private.accept(info)
     return (
-            addon.config.db.maxAge == nil
-            or info.age <= addon.config.db.maxAge
-        )
-        and (
-            not addon.config.db.filterBanned
-            or info.leaderName == nil
-            or not addon.config.isBannedPlayer(private.normalizePlayerName(info.leaderName))
-        )
-        and (
-            info.voiceChat == ''
-            or not addon.config.db.noVoice
-        )
+        addon.config.db.maxAge == nil
+        or info.age <= addon.config.db.maxAge
+    )
+    and (
+        not addon.config.db.filterBanned
+        or info.leaderName == nil
+        or not addon.config.isBannedPlayer(private.normalizePlayerName(info.leaderName))
+    )
+    and (
+        info.voiceChat == ''
+        or not addon.config.db.noVoice
+    )
 end
 
 function private.normalizePlayerName(name)
@@ -114,7 +100,6 @@ function private.reportGroup(resultId)
         reportingGroup = false
     end
 end
-
 
 function private.onReport(resultId, reason)
     -- ignore reports for other reasons

@@ -3,21 +3,20 @@ local modules = {}
 local frame = CreateFrame('Frame')
 LFGSpamFilterAddon = addon
 
-function addon.module(name)
-    addon[name] = {}
-    table.insert(modules, name)
+function addon.module(...)
+    local namespace = addon
 
-    return addon[name], {}
-end
+    for _, key in ipairs({...}) do
+        if namespace[key] == nil then
+            namespace[key] = {}
+        end
 
-function addon.tryFinally(try, finally, ...)
-    local status, err = pcall(try, ...)
-
-    finally()
-
-    if not status then
-        error(err)
+        namespace = namespace[key]
     end
+
+    table.insert(modules, namespace)
+
+    return namespace, {}
 end
 
 frame:RegisterEvent('ADDON_LOADED')
@@ -26,7 +25,9 @@ frame:SetScript('OnEvent', function (_, event, arg1)
         frame:UnregisterEvent(event)
 
         for _, module in ipairs(modules) do
-            addon[module].init()
+            if module.init then
+                module.init()
+            end
         end
     end
 end)
