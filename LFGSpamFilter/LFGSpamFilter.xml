@@ -70,7 +70,7 @@
     </Frame>
 
     <Frame name="LFGSpamFilterOptions" parent="UIParent" enableMouse="true" hidden="true" frameStrata="DIALOG" inherits="TooltipBackdropTemplate">
-        <Size x="192" y="285"/>
+        <Size x="192" y="307"/>
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="LFGSpamFilterStatusButton" x="0" y="1"/>
         </Anchors>
@@ -136,18 +136,24 @@
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-150"/>
                     </Anchors>
                 </FontString>
+                <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="fix duplicate applications">
+                    <Size x="0" y="10"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-172"/>
+                    </Anchors>
+                </FontString>
                 <FontString parentKey="BannedPlayersHeading" inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT">
                     <Size>
                         <AbsDimension x="0" y="10"/>
                     </Size>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-176"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-198"/>
                     </Anchors>
                 </FontString>
                 <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="filter banned players">
                     <Size x="0" y="10"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-196"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-218"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -192,15 +198,20 @@
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-144"/>
                 </Anchors>
             </CheckButton>
+            <CheckButton parentKey="FilterApplications" inherits="LFGSpamFilterCheckboxTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-166"/>
+                </Anchors>
+            </CheckButton>
             <CheckButton parentKey="FilterBanned" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-190"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-212"/>
                 </Anchors>
             </CheckButton>
             <Button parentKey="UnbanAll" inherits="UIPanelButtonGrayTemplate" text="Unban all">
                 <Size x="73" y="20"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-216"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-238"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -214,7 +225,7 @@
             <Button parentKey="UnbanLast" inherits="UIPanelButtonGrayTemplate" text="Unban last">
                 <Size x="73" y="20"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-216"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-238"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -228,7 +239,7 @@
             <Button parentKey="OkButton" inherits="UIPanelButtonNoTooltipTemplate" text="OK">
                 <Size x="151" y="20"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-250"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-272"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>

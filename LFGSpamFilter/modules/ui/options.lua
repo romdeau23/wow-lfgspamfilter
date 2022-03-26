@@ -29,6 +29,9 @@ function options.load()
     -- quick report
     LFGSpamFilterOptions.QuickReport:SetChecked(addon.config.db.quickReport)
 
+    -- filter applications
+    LFGSpamFilterOptions.FilterApplications:SetChecked(addon.config.db.filterApplications)
+
     -- filter banned
     LFGSpamFilterOptions.FilterBanned:SetChecked(addon.config.db.filterBanned)
 end
@@ -55,6 +58,9 @@ function options.apply()
 
     -- quick report
     addon.config.db.quickReport = LFGSpamFilterOptions.QuickReport:GetChecked()
+
+    -- filter applications
+    addon.config.db.filterApplications = LFGSpamFilterOptions.FilterApplications:GetChecked()
 
     -- filter banned
     addon.config.db.filterBanned = LFGSpamFilterOptions.FilterBanned:GetChecked()

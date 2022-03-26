@@ -18,45 +18,62 @@ function private.filter(results)
         return
     end
 
+    -- filter applications to remove duplicate results (UI bug)
+    if addon.config.db.filterApplications then
+        local applicationMap = {}
+
+        for _, resultId in ipairs(LFGListFrame.SearchPanel.applications) do
+            applicationMap[resultId] = true
+        end
+
+        private.filterTable(results, function (resultId)
+            return applicationMap[resultId] == nil
+        end)
+    end
+
     -- check ignored categories
     if addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory()) then
         addon.ui.statusButton.update(false, 0)
         return
     end
 
-    -- filter results into another table
-    local accepted = {}
-    local numAccepted = 0
-    local numResults = #results
-
-    -- filter results into another table
-    for i = 1, numResults do
-        local resultId = results[i]
+    -- filter results
+    local newCount, filteredCount = private.filterTable(results, function (resultId)
         local info = C_LFGList.GetSearchResultInfo(resultId)
 
-        if info then
-            if private.accept(info) then
-                numAccepted = numAccepted + 1
-                accepted[numAccepted] = resultId
-            end
-        end
-    end
+        return info and private.accept(info)
+    end)
 
     -- handle results
-    local numFiltered = numResults - numAccepted
+    LFGListFrame.SearchPanel.totalResults = newCount
+    addon.ui.statusButton.update(true, filteredCount)
+end
 
-    if numFiltered > 0 then
-        table.wipe(results)
+function private.filterTable(input, callback)
+    local output = {}
+    local inputCount = #input
+    local outputCount = 0
 
-        for i = 1, numAccepted do
-            results[i] = accepted[i]
+    for i = 1, inputCount do
+        local item = input[i]
+
+        if callback(item) then
+            outputCount = outputCount + 1
+            output[outputCount] = item
         end
-
-        LFGListFrame.SearchPanel.totalResults = numAccepted
-        addon.config.addToStats('filtered', numFiltered)
     end
 
-    addon.ui.statusButton.update(true, numFiltered)
+    local filteredCount = inputCount - outputCount
+
+    if filteredCount > 0 then
+        table.wipe(input)
+
+        for i = 1, outputCount do
+            input[i] = output[i]
+        end
+    end
+
+    return outputCount, filteredCount
 end
 
 function private.accept(info)
@@ -106,9 +123,6 @@ function private.onReport(resultId, reason)
     if reason ~= 'lfglistspam' then
         return
     end
-
-    -- count the report
-    addon.config.addToStats('reports', 1)
 
     -- also ban the group if this is a report from the drop-down menu (not using the quick report)
     if not reportingGroup then
