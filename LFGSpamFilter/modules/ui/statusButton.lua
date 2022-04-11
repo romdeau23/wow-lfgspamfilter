@@ -4,8 +4,12 @@ local statusButton, private = addon.module('ui', 'statusButton')
 function statusButton.init()
     local statusButtonLeftOffset = 0
 
-    if select(4, GetAddOnInfo('PremadeGroupsFilter')) then
-        statusButtonLeftOffset = -65
+    if addon.interop.isAddonEnabled('PremadeGroupsFilter') then
+        statusButtonLeftOffset = statusButtonLeftOffset - 65
+    end
+
+    if addon.interop.isAddonEnabled('WorldQuestTracker') then
+        statusButtonLeftOffset = statusButtonLeftOffset - 75
     end
 
     LFGSpamFilterStatusButton.tooltip = ''

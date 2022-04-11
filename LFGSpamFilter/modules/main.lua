@@ -18,6 +18,9 @@ function private.filter(results)
         return
     end
 
+    -- fix GetPlaystyleString() before tainting the result table
+    addon.interop.fixGetPlaystyleString()
+
     -- filter applications to remove duplicate results (UI bug)
     if addon.config.db.filterApplications then
         local applicationMap = {}
