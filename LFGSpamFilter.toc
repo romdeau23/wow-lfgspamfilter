@@ -1,11 +1,11 @@
 ## Interface: 90200
 ## Title: LFGSpamFilter
-## Version: 0.7.0
+## Version: 1.0.0
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering and quick reporting
 ## SavedVariables: LFGSpamFilterAddonConfig
 ## OptionalDeps: PremadeGroupsFilter
-## X-Website: https://www.curseforge.com/wow/addons/lfgspamfilter
+## X-Website: https://github.com/romdeau23/wow-lfgspamfilter
 
 LFGSpamFilter.lua
 LFGSpamFilter.xml

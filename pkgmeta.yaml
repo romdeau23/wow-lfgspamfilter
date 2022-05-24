@@ -1,0 +1,3 @@
+package-as: LFGSpamFilter
+ignore:
+    - README.rst
