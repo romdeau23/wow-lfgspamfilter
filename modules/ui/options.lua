@@ -23,11 +23,8 @@ function options.load()
         LFGSpamFilterOptions.MaxAge:SetText('')
     end
 
-    -- report
-    LFGSpamFilterOptions.Report:SetChecked(addon.config.db.report)
-
-    -- quick report
-    LFGSpamFilterOptions.QuickReport:SetChecked(addon.config.db.quickReport)
+    -- ban button
+    LFGSpamFilterOptions.BanButton:SetChecked(addon.config.db.banButton)
 
     -- filter applications
     LFGSpamFilterOptions.FilterApplications:SetChecked(addon.config.db.filterApplications)
@@ -53,11 +50,8 @@ function options.apply()
         addon.config.db.maxAge = nil
     end
 
-    -- report
-    addon.config.db.report = LFGSpamFilterOptions.Report:GetChecked()
-
-    -- quick report
-    addon.config.db.quickReport = LFGSpamFilterOptions.QuickReport:GetChecked()
+    -- ban button
+    addon.config.db.banButton = LFGSpamFilterOptions.BanButton:GetChecked()
 
     -- filter applications
     addon.config.db.filterApplications = LFGSpamFilterOptions.FilterApplications:GetChecked()

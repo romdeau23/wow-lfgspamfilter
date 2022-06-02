@@ -1,15 +1,17 @@
 local _, addon = ...
 local main, private = addon.module('main')
-local reportingGroup = false
 
 function main.init()
     hooksecurefunc('LFGListUtil_SortSearchResults', private.filter)
-    hooksecurefunc(C_LFGList, 'ReportSearchResult', private.onReport)
+    hooksecurefunc(C_ReportSystem, 'SendReport', private.onReport)
 end
 
-function main.quickReport(resultId)
-    private.banGroupLeader(resultId)
-    private.reportGroup(resultId)
+function main.banGroupLeader(resultId)
+    local info = C_LFGList.GetSearchResultInfo(resultId)
+
+    if info and info.leaderName then
+        addon.config.banPlayer(private.normalizePlayerName(info.leaderName))
+    end
 end
 
 function private.filter(results)
@@ -105,30 +107,14 @@ function private.normalizePlayerName(name)
     return name
 end
 
-function private.banGroupLeader(resultId)
-    local info = C_LFGList.GetSearchResultInfo(resultId)
-
-    if info and info.leaderName then
-        addon.config.banPlayer(private.normalizePlayerName(info.leaderName))
-    end
-end
-
-function private.reportGroup(resultId)
-    if addon.config.db.report then
-        reportingGroup = true
-        pcall(C_LFGList.ReportSearchResult, resultId, 'lfglistspam')
-        reportingGroup = false
-    end
-end
-
-function private.onReport(resultId, reason)
-    -- ignore reports for other reasons
-    if reason ~= 'lfglistspam' then
-        return
-    end
-
-    -- also ban the group if this is a report from the drop-down menu (not using the quick report)
-    if not reportingGroup then
-        private.banGroupLeader(resultId)
+function private.onReport(reportInfo, reportPlayerLocation)
+    if
+        reportInfo.reportType == Enum.ReportType.GroupFinderPosting
+        and reportInfo.groupFinderSearchResultID 
+        and reportInfo.minorCategoryFlags
+        and bit.band(reportInfo.minorCategoryFlags, Enum.ReportMinorCategory.Advertisement) ~= 0
+    then
+        main.banGroupLeader(reportInfo.groupFinderSearchResultID)
+        addon.ui.updateLfgResults()
     end
 end

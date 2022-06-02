@@ -17,9 +17,9 @@ end
 function ui.getCurrentLfgCategory()
     local suffix = ''
 
-    if bit.band(LFGListFrame.baseFilters, LE_LFG_LIST_FILTER_PVE) ~= 0 then
+    if bit.band(LFGListFrame.baseFilters, Enum.LFGListFilter.PvE) ~= 0 then
         suffix = '-pve'
-    elseif bit.band(LFGListFrame.baseFilters, LE_LFG_LIST_FILTER_PVP) ~= 0 then
+    elseif bit.band(LFGListFrame.baseFilters, Enum.LFGListFilter.PvP) ~= 0 then
         suffix = '-pvp'
     end
 
@@ -36,5 +36,5 @@ end
 
 function ui.hidePopups()
     LFGSpamFilterOptions:Hide()
-    LFGSpamFilterQuickReportButton:Hide()
+    LFGSpamFilterBanButton:Hide()
 end

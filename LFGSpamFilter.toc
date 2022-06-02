@@ -1,8 +1,8 @@
-## Interface: 90200
+## Interface: 90205
 ## Title: LFGSpamFilter
-## Version: 1.0.0
+## Version: 1.1.0
 ## Author: romdeau23
-## Notes: LFG tool spam filtering and quick reporting
+## Notes: LFG tool spam filtering
 ## SavedVariables: LFGSpamFilterAddonConfig
 ## OptionalDeps: PremadeGroupsFilter
 ## X-Website: https://github.com/romdeau23/wow-lfgspamfilter
@@ -14,5 +14,5 @@ modules/config.lua
 modules/interop.lua
 modules/ui.lua
 modules/ui/options.lua
-modules/ui/quickReport.lua
+modules/ui/banButton.lua
 modules/ui/statusButton.lua

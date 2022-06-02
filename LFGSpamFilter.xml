@@ -3,10 +3,10 @@
     xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd"
 >
-    <Button frameStrata="TOOLTIP" name="LFGSpamFilterQuickReportButton" inherits="UIPanelCloseButtonNoScripts" hidden="true">
+    <Button frameStrata="TOOLTIP" name="LFGSpamFilterBanButton" inherits="UIPanelCloseButtonNoScripts" hidden="true">
         <Scripts>
             <OnClick>
-                LFGSpamFilterAddon.ui.quickReport.onClick()
+                LFGSpamFilterAddon.ui.banButton.onClick()
                 self:Hide()
             </OnClick>
             <OnLeave>
@@ -70,7 +70,7 @@
     </Frame>
 
     <Frame name="LFGSpamFilterOptions" parent="UIParent" enableMouse="true" hidden="true" frameStrata="DIALOG" inherits="TooltipBackdropTemplate">
-        <Size x="192" y="307"/>
+        <Size x="192" y="285"/>
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="LFGSpamFilterStatusButton" x="0" y="1"/>
         </Anchors>
@@ -104,7 +104,7 @@
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-40"/>
                     </Anchors>
                 </FontString>
-                <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="voice chat (usually spam)">
+                <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="groups with voice chat">
                     <Size x="0" y="10"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-60"/>
@@ -124,22 +124,16 @@
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-108"/>
                     </Anchors>
                 </FontString>
-                <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="report as spam">
+                <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="show ban button">
                     <Size x="0" y="10"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-128"/>
                     </Anchors>
                 </FontString>
-                <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="show quick-report button">
-                    <Size x="0" y="10"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-150"/>
-                    </Anchors>
-                </FontString>
                 <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="fix duplicate applications">
                     <Size x="0" y="10"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-172"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-150"/>
                     </Anchors>
                 </FontString>
                 <FontString parentKey="BannedPlayersHeading" inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT">
@@ -147,13 +141,13 @@
                         <AbsDimension x="0" y="10"/>
                     </Size>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-198"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-176"/>
                     </Anchors>
                 </FontString>
                 <FontString inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT" text="filter banned players">
                     <Size x="0" y="10"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-218"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="47" y="-196"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -188,30 +182,25 @@
                     <AbsInset left="-1.5" right="-1.5"/>
                 </TextInsets>
             </EditBox>
-            <CheckButton parentKey="Report" inherits="LFGSpamFilterCheckboxTemplate">
+            <CheckButton parentKey="BanButton" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-122"/>
                 </Anchors>
             </CheckButton>
-            <CheckButton parentKey="QuickReport" inherits="LFGSpamFilterCheckboxTemplate">
+            <CheckButton parentKey="FilterApplications" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-144"/>
                 </Anchors>
             </CheckButton>
-            <CheckButton parentKey="FilterApplications" inherits="LFGSpamFilterCheckboxTemplate">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-166"/>
-                </Anchors>
-            </CheckButton>
             <CheckButton parentKey="FilterBanned" inherits="LFGSpamFilterCheckboxTemplate">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-212"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-190"/>
                 </Anchors>
             </CheckButton>
             <Button parentKey="UnbanAll" inherits="UIPanelButtonGrayTemplate" text="Unban all">
                 <Size x="73" y="20"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-238"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-216"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -225,7 +214,7 @@
             <Button parentKey="UnbanLast" inherits="UIPanelButtonGrayTemplate" text="Unban last">
                 <Size x="73" y="20"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-238"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-216"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -239,7 +228,7 @@
             <Button parentKey="OkButton" inherits="UIPanelButtonNoTooltipTemplate" text="OK">
                 <Size x="151" y="20"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-272"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-250"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
