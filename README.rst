@@ -6,8 +6,9 @@ This small addon will help you combat spam in the LFG tool.
 Features
 ********
 
-- filtering banned and reported players
+- filtering previously banned or reported players
 - filtering based on group age or filled out voice chat
+- quickly filling out advertisement reports
 - fixing the duplicate applications bug
 
 **Please note that this filtering is not 100%. It should improve over time as you report more spam groups.**

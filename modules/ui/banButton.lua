@@ -11,9 +11,20 @@ function banButton.onClick()
     local resultId = LFGSpamFilterBanButton.resultId
 
     if resultId then
-        addon.main.banGroupLeader(resultId)
-        addon.ui.updateLfgResults()
+        local info = C_LFGList.GetSearchResultInfo(resultId)
+
+        if info and info.leaderName then
+            if addon.config.db.reportHelper then
+                LFGList_ReportListing(resultId, info.leaderName)
+                addon.ui.reportHelper.begin()
+            else
+                addon.main.banPlayer(info.leaderName)
+                addon.ui.updateLfgResults()
+            end
+        end
     end
+
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
 function private.onLfgSearchEntryUpdate(entry)
@@ -25,7 +36,7 @@ function private.onLfgSearchEntryUpdate(entry)
 end
 
 function private.onLfgSearchEntryEnter(entry)
-    if addon.config.db.banButton and not addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory()) then
+    if addon.config.db.banButton and not addon.ui.reportHelper.isActive() then
         LFGSpamFilterBanButton.resultId = entry.resultID
         LFGSpamFilterBanButton:ClearAllPoints()
         LFGSpamFilterBanButton:SetPoint('LEFT', entry, 'LEFT', -25, 0)

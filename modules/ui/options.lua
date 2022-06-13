@@ -26,6 +26,10 @@ function options.load()
     -- ban button
     LFGSpamFilterOptions.BanButton:SetChecked(addon.config.db.banButton)
 
+    -- report helper
+    LFGSpamFilterOptions.ReportHelper:SetChecked(addon.config.db.reportHelper)
+    LFGSpamFilterOptions.ReportHelper:SetEnabled(addon.config.db.banButton)
+
     -- filter applications
     LFGSpamFilterOptions.FilterApplications:SetChecked(addon.config.db.filterApplications)
 
@@ -52,6 +56,9 @@ function options.apply()
 
     -- ban button
     addon.config.db.banButton = LFGSpamFilterOptions.BanButton:GetChecked()
+
+    -- report helper
+    addon.config.db.reportHelper = LFGSpamFilterOptions.ReportHelper:GetChecked()
 
     -- filter applications
     addon.config.db.filterApplications = LFGSpamFilterOptions.FilterApplications:GetChecked()

@@ -6,12 +6,8 @@ function main.init()
     hooksecurefunc(C_ReportSystem, 'SendReport', private.onReport)
 end
 
-function main.banGroupLeader(resultId)
-    local info = C_LFGList.GetSearchResultInfo(resultId)
-
-    if info and info.leaderName then
-        addon.config.banPlayer(private.normalizePlayerName(info.leaderName))
-    end
+function main.banPlayer(name)
+    addon.config.banPlayer(private.normalizePlayerName(name))
 end
 
 function private.filter(results)
@@ -110,11 +106,12 @@ end
 function private.onReport(reportInfo, reportPlayerLocation)
     if
         reportInfo.reportType == Enum.ReportType.GroupFinderPosting
-        and reportInfo.groupFinderSearchResultID 
+        and reportInfo.groupFinderSearchResultID
         and reportInfo.minorCategoryFlags
         and bit.band(reportInfo.minorCategoryFlags, Enum.ReportMinorCategory.Advertisement) ~= 0
+        and ReportFrame.playerName
     then
-        main.banGroupLeader(reportInfo.groupFinderSearchResultID)
+        main.banPlayer(ReportFrame.playerName)
         addon.ui.updateLfgResults()
     end
 end
