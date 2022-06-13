@@ -3,6 +3,7 @@ LFGSpamFilter (WoW addon)
 
 This small addon will help you combat spam in the LFG tool.
 
+
 Features
 ********
 
@@ -19,6 +20,7 @@ How to use
 
 This addon adds two new UI elements to the LFG tool:
 
+
 Status button
 =============
 
@@ -30,11 +32,22 @@ The status button shows the current state of LFG filtering:
 
 Clicking on it will show the options pop-up. Right-clicking quickly toggles filtering for the current LFG category.
 
+
 Ban button
 ==========
 
 When hovering a group, a red "X" will appear on the left side. Clicking it bans the group leader
 from appearing in your seach results. Reporting the group has the same effect.
+
+
+Report helper
+=============
+
+After you ban a group a new button will appear at your mouse position. Clicking this button 3 times reports
+the group for advertisement. This can be disabled in options.
+
+(It works this way due to the restrictions on the new report UI added in 9.2.5. But it's still faster than
+doing it manually.)
 
 
 FAQ
