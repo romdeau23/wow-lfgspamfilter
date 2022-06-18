@@ -14,7 +14,7 @@ function banButton.onClick()
         local info = C_LFGList.GetSearchResultInfo(resultId)
 
         if info and info.leaderName then
-            if addon.config.db.reportHelper then
+            if addon.config.db.reportHelper and not InCombatLockdown() then
                 LFGList_ReportListing(resultId, info.leaderName)
                 addon.ui.reportHelper.begin()
             else

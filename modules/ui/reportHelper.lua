@@ -38,6 +38,7 @@ function reportHelper.init()
     LFGSpamFilterReportHelperButton:HookScript('OnMouseDown', private.stopOnRightClick)
     ReportFrame:HookScript('OnHide', private.stop)
     hooksecurefunc('LFGListSearchPanel_UpdateResults', private.stop)
+    addon.on('PLAYER_REGEN_DISABLED', private.stop)
 end
 
 function reportHelper.begin()
