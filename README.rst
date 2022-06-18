@@ -18,7 +18,7 @@ Features
 How to use
 **********
 
-This addon adds two new UI elements to the LFG tool:
+This addon adds several new UI elements to the LFG tool:
 
 
 Status button
@@ -46,8 +46,7 @@ Report helper
 After you ban a group a new button will appear at your mouse position. Clicking this button 3 times reports
 the group for advertisement. This can be disabled in options.
 
-(It works this way due to the restrictions on the new report UI added in 9.2.5. But it's still faster than
-doing it manually.)
+Note: This functionality is not available while in combat.
 
 
 FAQ
@@ -57,7 +56,15 @@ Why not filter using the group title, etc.?
 ===========================================
 
 Sadly, Blizzard has made it impossible for addons to read the content of group titles, descriptions
-and voice chat information. This limits the filtering to the other parameters.
+and voice chat information. This limits the filtering to the other parameters and banning players by name.
+
+
+Why are multiple clicks required to report a group?
+===================================================
+
+The report system update in 9.2.5 has made it impossible for addons to send reports directly.
+
+If you don't want to report groups this way you can disable the "report helper" in options.
 
 
 Known issues
