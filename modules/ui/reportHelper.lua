@@ -36,9 +36,9 @@ local steps = {
 function reportHelper.init()
     LFGSpamFilterReportHelperButton:HookScript('OnClick', private.next)
     LFGSpamFilterReportHelperButton:HookScript('OnMouseDown', private.stopOnRightClick)
-    ReportFrame:HookScript('OnHide', private.stop)
-    hooksecurefunc('LFGListSearchPanel_UpdateResults', private.stop)
-    addon.on('PLAYER_REGEN_DISABLED', private.stop)
+    ReportFrame:HookScript('OnHide', reportHelper.stop)
+    hooksecurefunc('LFGListSearchPanel_UpdateResults', reportHelper.stop)
+    addon.on('PLAYER_REGEN_DISABLED', reportHelper.stop)
 end
 
 function reportHelper.begin()
@@ -47,6 +47,13 @@ function reportHelper.begin()
     private.updateButton()
     LFGSpamFilterReportHelperButton:Show()
     private.maybeShowButtonTip()
+end
+
+function reportHelper.stop()
+    if reportHelper.isActive() then
+        LFGSpamFilterReportHelperButton:Hide()
+        ReportFrame:Hide()
+    end
 end
 
 function reportHelper.isActive()
@@ -58,20 +65,13 @@ function private.next()
         currentStep = currentStep + 1
         private.updateButton()
     else
-        private.stop()
-    end
-end
-
-function private.stop()
-    if reportHelper.isActive() then
-        LFGSpamFilterReportHelperButton:Hide()
-        ReportFrame:Hide()
+        reportHelper.stop()
     end
 end
 
 function private.stopOnRightClick(_, button)
     if button == 'RightButton' then
-        private.stop()
+        reportHelper.stop()
     end
 end
 
@@ -94,7 +94,7 @@ function private.updateButton()
             'Reporting failed'
             .. '\n\n(Make sure to not open other windows until the report is finished.)'
         )
-        private.stop()
+        reportHelper.stop()
     end
 end
 

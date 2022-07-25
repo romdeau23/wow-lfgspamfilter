@@ -37,5 +37,5 @@ end
 function ui.hidePopups()
     LFGSpamFilterOptions:Hide()
     LFGSpamFilterBanButton:Hide()
-    LFGSpamFilterReportHelperButton:Hide()
+    addon.ui.reportHelper.stop()
 end
