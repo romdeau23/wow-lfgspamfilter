@@ -71,3 +71,5 @@ Known issues
 ************
 
 - errors related to calling ``GetPlaystyleString()`` - shouldn't happen if you have an authenticator on your account
+- "Report Advertisement" context menu option doesn't always work - this is caused by UI taint from group filtering
+  and is not fixable at the moment, use the "Report Group" option or the ban button provided by this addon instead
