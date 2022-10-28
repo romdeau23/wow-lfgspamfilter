@@ -1,6 +1,6 @@
 local _, addon = ...
 local config, private = addon.module('config')
-local latestVersion = 8
+local latestVersion = 9
 
 function config.init()
     if LFGSpamFilterAddonConfig then
@@ -70,7 +70,6 @@ function private.getDefaultConfig()
         bannedPlayers = {},
         numberOfBannedPlayers = 0,
         filterBanned = true,
-        filterApplications = true,
         lastBan = nil,
         noVoice = false,
         maxAge = 4 * 3600,
@@ -157,6 +156,12 @@ private.migrations = {
         config.db.reportHelper = true
         config.db.reportHelperTipShown = false
     end,
+
+    [9] = function ()
+        config.db.filterApplications = nil
+        config.db.lastMaintenance = 0
+        config.db.buttonTipShown = false
+    end,
 }
 
 function private.maintenance()
@@ -169,10 +174,15 @@ end
 
 function private.cleanupBannedPlayers(threshold)
     local now = time()
+    local newCount = 0
 
     for name, lastSeen in pairs(config.db.bannedPlayers) do
         if now - lastSeen >= threshold then
             config.db.bannedPlayers[name] = nil
+        else
+            newCount = newCount + 1
         end
     end
+
+    config.db.numberOfBannedPlayers = newCount
 end

@@ -1,5 +1,6 @@
 local _, addon = ...
 local statusButton, private = addon.module('ui', 'statusButton')
+local usageHint = DISABLED_FONT_COLOR_CODE .. '(left click for options, right to toggle, middle to invert)|r'
 
 function statusButton.init()
     local statusButtonLeftOffset = 0
@@ -18,45 +19,63 @@ function statusButton.init()
     LFGSpamFilterStatusButton:Show()
 end
 
-function statusButton.update(active, numFiltered)
+function statusButton.updateActive(acceptedCount, rejectedCount, isInverted)
     private.maybeShowButtonTip()
 
-    local usageHint = DISABLED_FONT_COLOR_CODE .. '(click for options, right-click to toggle)|r';
+    if isInverted then
+        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking2')
+        LFGSpamFilterStatusButton.Text:Show()
+        LFGSpamFilterStatusButton.TextFrame:Show()
+        LFGSpamFilterStatusButton.Text:SetText(string.format('|cffff0000%d|r', acceptedCount))
+        LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 1, 1)
+        LFGSpamFilterStatusButton.Icon:SetDesaturated(nil)
 
-    if active then
-        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking0')
-
-        if numFiltered > 0 then
-            LFGSpamFilterStatusButton.Text:Show()
-            LFGSpamFilterStatusButton.TextFrame:Show()
-            LFGSpamFilterStatusButton.Text:SetText(tostring(math.min(99, numFiltered)))
-            LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 0, 0)
-            LFGSpamFilterStatusButton.Icon:SetDesaturated(nil)
+        if acceptedCount > 0 then
             LFGSpamFilterStatusButton.tooltip = string.format(
-                'LFGSpamFilter has filtered %d groups\n%s',
-                numFiltered,
+                'LFGSpamFilter would filter %d groups\n%s',
+                acceptedCount,
                 usageHint
             )
         else
-            LFGSpamFilterStatusButton.Text:Hide()
-            LFGSpamFilterStatusButton.TextFrame:Hide()
-            LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 1, 1)
-            LFGSpamFilterStatusButton.Icon:SetDesaturated(1)
             LFGSpamFilterStatusButton.tooltip = string.format(
-                'LFGSpamFilter has not filtered any groups\n%s',
+                'LFGSpamFilter would not filter any groups\n%s',
                 usageHint
             )
         end
+    elseif rejectedCount > 0 then
+        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking0')
+        LFGSpamFilterStatusButton.Text:Show()
+        LFGSpamFilterStatusButton.TextFrame:Show()
+        LFGSpamFilterStatusButton.Text:SetText(tostring(math.min(99, rejectedCount)))
+        LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 0, 0)
+        LFGSpamFilterStatusButton.Icon:SetDesaturated(nil)
+        LFGSpamFilterStatusButton.tooltip = string.format(
+            'LFGSpamFilter has filtered %d groups\n%s',
+            rejectedCount,
+            usageHint
+        )
     else
+        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking0')
         LFGSpamFilterStatusButton.Text:Hide()
         LFGSpamFilterStatusButton.TextFrame:Hide()
-        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking4')
         LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 1, 1)
+        LFGSpamFilterStatusButton.Icon:SetDesaturated(1)
         LFGSpamFilterStatusButton.tooltip = string.format(
-            'LFGSpamFilter is disabled for this category\n%s',
+            'LFGSpamFilter has not filtered any groups\n%s',
             usageHint
         )
     end
+end
+
+function statusButton.updateInactive()
+    LFGSpamFilterStatusButton.Text:Hide()
+    LFGSpamFilterStatusButton.TextFrame:Hide()
+    LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking4')
+    LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 1, 1)
+    LFGSpamFilterStatusButton.tooltip = string.format(
+        'LFGSpamFilter is disabled for this category\n%s',
+        usageHint
+    )
 end
 
 function statusButton.onClick(button)
@@ -68,12 +87,20 @@ function statusButton.onClick(button)
             PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
             LFGSpamFilterOptions:Show()
         end
-    else
+    elseif button == 'RightButton' then
         -- toggle category on right click
         local category = addon.ui.getCurrentLfgCategory()
         addon.config.setIgnoredCategory(category, not addon.config.isIgnoredCategory(category))
+        addon.main.setInvertFilter(false)
         addon.ui.hidePopups()
         addon.ui.updateLfgResults()
+    elseif button == 'MiddleButton' then
+        -- toggle inverted filtering on middle click
+        if not addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory()) then
+            addon.main.setInvertFilter(not addon.main.isFilterInverted())
+            addon.ui.hidePopups()
+            addon.ui.updateLfgResults()
+        end
     end
 end
 
@@ -83,8 +110,10 @@ function private.maybeShowButtonTip()
         HelpTip:Show(
             LFGSpamFilterStatusButton,
             {
-                text = 'This is the LFGSpamFilter status button.'
-                    .. '\n\nClick on it for options.\nRight-click to toggle filtering.',
+                text = 'This is the LFGSpamFilter status button.\n\n'
+                    .. 'Click on it for options.\n'
+                    .. 'Right-click to toggle filtering.\n'
+                    .. 'Middle-click to invert filtering.',
                 checkCVars = false,
                 systemPriority = 999,
                 buttonStyle = HelpTip.ButtonStyle.Close,

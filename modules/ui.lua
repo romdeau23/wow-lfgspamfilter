@@ -2,8 +2,8 @@ local _, addon = ...
 local ui, private = addon.module('ui')
 
 function ui.init()
-    hooksecurefunc('LFGListFrame_SetActivePanel', ui.hidePopups)
-    LFGListFrame:HookScript('OnHide', ui.hidePopups)
+    hooksecurefunc('LFGListFrame_SetActivePanel', private.resetUiState)
+    LFGListFrame:HookScript('OnHide', private.resetUiState)
 end
 
 function ui.message(text, ...)
@@ -38,4 +38,9 @@ function ui.hidePopups()
     LFGSpamFilterOptions:Hide()
     LFGSpamFilterBanButton:Hide()
     addon.ui.reportHelper.stop()
+end
+
+function private.resetUiState()
+    ui.hidePopups()
+    addon.main.setInvertFilter(false)
 end

@@ -1,5 +1,6 @@
 local _, addon = ...
 local main, private = addon.module('main')
+local invertFilter = false
 
 function main.init()
     hooksecurefunc('LFGListUtil_SortSearchResults', private.filter)
@@ -8,6 +9,14 @@ end
 
 function main.banPlayer(name)
     addon.config.banPlayer(private.normalizePlayerName(name))
+end
+
+function main.setInvertFilter(enabled)
+    invertFilter = enabled
+end
+
+function main.isFilterInverted()
+    return invertFilter
 end
 
 function private.filter(results)
@@ -19,35 +28,37 @@ function private.filter(results)
     -- fix GetPlaystyleString() before tainting the result table
     addon.interop.fixGetPlaystyleString()
 
-    -- filter applications to remove duplicate results (UI bug)
-    if addon.config.db.filterApplications then
-        local applicationMap = {}
-
-        for _, resultId in ipairs(LFGListFrame.SearchPanel.applications) do
-            applicationMap[resultId] = true
-        end
-
-        private.filterTable(results, function (resultId)
-            return applicationMap[resultId] == nil
-        end)
-    end
-
     -- check ignored categories
     if addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory()) then
-        addon.ui.statusButton.update(false, 0)
+        addon.ui.statusButton.updateInactive()
         return
     end
 
     -- filter results
-    local newCount, filteredCount = private.filterTable(results, function (resultId)
+    local acceptedCount, rejectedCount = private.filterTable(results, function (resultId)
         local info = C_LFGList.GetSearchResultInfo(resultId)
 
-        return info and private.accept(info)
+        if info then
+            local accepted = private.accept(info)
+
+            if invertFilter then
+                accepted = not accepted
+            end
+
+            return accepted
+        end
+
+        return false
     end)
 
     -- handle results
-    LFGListFrame.SearchPanel.totalResults = newCount
-    addon.ui.statusButton.update(true, filteredCount)
+    LFGListFrame.SearchPanel.totalResults = acceptedCount
+    addon.ui.statusButton.updateActive(acceptedCount, rejectedCount, invertFilter)
+
+    -- hide start group button so it doesn't overlap the entries (blizz bug)
+    if acceptedCount > 0 then
+        LFGListFrame.SearchPanel.ScrollBox.StartGroupButton:SetShown(false)
+    end
 end
 
 function private.filterTable(input, callback)

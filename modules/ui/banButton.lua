@@ -28,10 +28,10 @@ function banButton.onClick()
 end
 
 function private.onLfgSearchEntryUpdate(entry)
-    if hookedEntries[entry:GetName()] == nil then
+    if hookedEntries[entry] == nil then
         entry:HookScript('OnEnter', private.onLfgSearchEntryEnter)
         entry:HookScript('OnLeave', private.onLfgSearchEntryLeave)
-        hookedEntries[entry:GetName()] = true
+        hookedEntries[entry] = true
     end
 end
 
@@ -39,13 +39,13 @@ function private.onLfgSearchEntryEnter(entry)
     if addon.config.db.banButton and not addon.ui.reportHelper.isActive() then
         LFGSpamFilterBanButton.resultId = entry.resultID
         LFGSpamFilterBanButton:ClearAllPoints()
-        LFGSpamFilterBanButton:SetPoint('LEFT', entry, 'LEFT', -25, 0)
+        LFGSpamFilterBanButton:SetPoint('LEFT', entry, 'LEFT', -23, 0)
         LFGSpamFilterBanButton:Show()
     end
 end
 
 function private.onLfgSearchEntryLeave()
-    if addon.config.db.banButton and not MouseIsOver(LFGSpamFilterBanButton) then
+    if addon.config.db.banButton and not MouseIsOver(LFGSpamFilterBanButton, 5, -5, 5, 5) then
         LFGSpamFilterBanButton:Hide()
     end
 end

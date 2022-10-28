@@ -10,7 +10,6 @@ Features
 - filtering previously banned or reported players
 - filtering based on group age or filled out voice chat
 - quickly filling out advertisement reports
-- fixing the duplicate applications bug
 
 **Please note that this filtering is not 100%. It should improve over time as you report more spam groups.**
 
@@ -29,15 +28,20 @@ The status button shows the current state of LFG filtering:
 - grey eye: no groups filtered
 - red eye with a number: some groups filtered
 - closed eye: filtering disabled in current LFG category
+- squinting eye with red number: filtering is currently inverted (showing only groups that would be filtered)
 
-Clicking on it will show the options pop-up. Right-clicking quickly toggles filtering for the current LFG category.
+The button has different mouse button interactions:
+
+- left click shows options
+- right click quickly toggles filtering for the current LFG category
+- middle click temporarily inverts the filtering
 
 
 Ban button
 ==========
 
 When hovering a group, a red "X" will appear on the left side. Clicking it bans the group leader
-from appearing in your seach results. Reporting the group has the same effect.
+from appearing in your seach results. Reporting the group manually has the same effect.
 
 
 Report helper
@@ -70,6 +74,7 @@ If you don't want to report groups this way you can disable the "report helper" 
 Known issues
 ************
 
-- errors related to calling ``GetPlaystyleString()`` - shouldn't happen if you have an authenticator on your account
 - "Report Advertisement" context menu option doesn't always work - this is caused by UI taint from group filtering
   and is not fixable at the moment, use the "Report Group" option or the ban button provided by this addon instead
+- errors related to calling ``GetPlaystyleString()`` - shouldn't happen if you have an authenticator on your account
+- currently (in 10.0.0), there's a LUA error that happens after reporting a group - not caused by this addon

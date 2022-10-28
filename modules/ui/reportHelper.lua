@@ -34,8 +34,7 @@ local steps = {
 }
 
 function reportHelper.init()
-    LFGSpamFilterReportHelperButton:HookScript('OnClick', private.next)
-    LFGSpamFilterReportHelperButton:HookScript('OnMouseDown', private.stopOnRightClick)
+    LFGSpamFilterReportHelperButton:SetScript('PostClick', private.postButtonClick)
     ReportFrame:HookScript('OnHide', reportHelper.stop)
     hooksecurefunc('LFGListSearchPanel_UpdateResults', reportHelper.stop)
     addon.on('PLAYER_REGEN_DISABLED', reportHelper.stop)
@@ -69,6 +68,28 @@ function private.next()
     end
 end
 
+function private.postButtonClick(_, button, isDown)
+    if isDown ~= GetCVarBool('ActionButtonUseKeyDown') then
+        -- secure buttons activate the click at different times depending on the CVar
+        -- ignore the cases when it wouldn't activate
+        return
+    end
+
+    if button == 'LeftButton' then
+        private.next()
+    elseif button == 'RightButton' then
+        reportHelper.stop()
+    end
+end
+
+function private.onButtonClick(_, button)
+    if button == 'LeftButton' then
+        private.next()
+    elseif button == 'RightButton' then
+        reportHelper.stop()
+    end
+end
+
 function private.stopOnRightClick(_, button)
     if button == 'RightButton' then
         reportHelper.stop()
@@ -87,12 +108,13 @@ function private.updateButton()
     local frameToClick = steps[currentStep]()
 
     if frameToClick then
-        LFGSpamFilterReportHelperButton:SetAttribute('clickbutton', frameToClick)
+        LFGSpamFilterReportHelperButton:SetAttribute('clickbutton1', frameToClick)
         LFGSpamFilterReportHelperButton:SetText(string.format('%d/%d', currentStep - 1, #steps))
     else
         addon.ui.message(
-            'Reporting failed'
-            .. '\n\n(Make sure to not open other windows until the report is finished.)'
+            'Reporting failed (#%d)'
+            .. '\n\n(Make sure to not do anything else until the report is finished.)',
+            currentStep
         )
         reportHelper.stop()
     end

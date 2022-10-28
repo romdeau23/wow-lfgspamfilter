@@ -25,7 +25,7 @@ function interop.fixGetPlaystyleString()
 
         -- and the player has an authenticator
         -- (can't create groups with tainted GetPlaystyleString() without an authenticator)
-        and C_LFGList.IsPlayerAuthenticatedForLFG(695) -- De Other Side
+        and C_LFGList.IsPlayerAuthenticatedForLFG(1160) -- Algeth'ar Academy
     then
         C_LFGList.GetPlaystyleString = private.getPlaystyleStringOverride
 
