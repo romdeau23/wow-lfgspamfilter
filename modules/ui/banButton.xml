@@ -1,0 +1,22 @@
+<Ui
+    xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd"
+>
+    <Button name="LFGSpamFilter_BanButton" inherits="UIPanelCloseButtonNoScripts" hidden="true" frameStrata="TOOLTIP">
+        <HitRectInsets>
+            <!-- increase clickable area -->
+            <AbsInset left="-5" right="-5" top="-5" bottom="-5"/>
+        </HitRectInsets>
+
+        <Scripts>
+            <OnClick>
+                LFGSpamFilterAddon.ui.banButton.onClick()
+                self:Hide()
+            </OnClick>
+            <OnLeave>
+                self:Hide()
+            </OnLeave>
+        </Scripts>
+    </Button>
+</Ui>

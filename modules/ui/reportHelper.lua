@@ -34,7 +34,7 @@ local steps = {
 }
 
 function reportHelper.init()
-    LFGSpamFilterReportHelperButton:SetScript('PostClick', private.postButtonClick)
+    LFGSpamFilter_ReportHelperButton:SetScript('PostClick', private.postButtonClick)
     ReportFrame:HookScript('OnHide', reportHelper.stop)
     hooksecurefunc('LFGListSearchPanel_UpdateResults', reportHelper.stop)
     addon.on('PLAYER_REGEN_DISABLED', reportHelper.stop)
@@ -44,19 +44,19 @@ function reportHelper.begin()
     currentStep = 1
     private.positionButton()
     private.updateButton()
-    LFGSpamFilterReportHelperButton:Show()
+    LFGSpamFilter_ReportHelperButton:Show()
     private.maybeShowButtonTip()
 end
 
 function reportHelper.stop()
     if reportHelper.isActive() then
-        LFGSpamFilterReportHelperButton:Hide()
+        LFGSpamFilter_ReportHelperButton:Hide()
         ReportFrame:Hide()
     end
 end
 
 function reportHelper.isActive()
-    return LFGSpamFilterReportHelperButton:IsShown()
+    return LFGSpamFilter_ReportHelperButton:IsShown()
 end
 
 function private.next()
@@ -98,18 +98,18 @@ end
 
 function private.positionButton()
     local mouseX, mouseY = GetCursorPosition()
-    local scale = LFGSpamFilterReportHelperButton:GetEffectiveScale()
+    local scale = LFGSpamFilter_ReportHelperButton:GetEffectiveScale()
 
-    LFGSpamFilterReportHelperButton:ClearAllPoints()
-    LFGSpamFilterReportHelperButton:SetPoint('CENTER', nil, 'BOTTOMLEFT', mouseX / scale, mouseY / scale)
+    LFGSpamFilter_ReportHelperButton:ClearAllPoints()
+    LFGSpamFilter_ReportHelperButton:SetPoint('CENTER', nil, 'BOTTOMLEFT', mouseX / scale, mouseY / scale)
 end
 
 function private.updateButton()
     local frameToClick = steps[currentStep]()
 
     if frameToClick then
-        LFGSpamFilterReportHelperButton:SetAttribute('clickbutton1', frameToClick)
-        LFGSpamFilterReportHelperButton:SetText(string.format('%d/%d', currentStep - 1, #steps))
+        LFGSpamFilter_ReportHelperButton:SetAttribute('clickbutton1', frameToClick)
+        LFGSpamFilter_ReportHelperButton:SetText(string.format('%d/%d', currentStep - 1, #steps))
     else
         addon.ui.message(
             'Reporting failed (#%d)'
@@ -124,7 +124,7 @@ function private.maybeShowButtonTip()
     if not addon.config.db.reportHelperTipShown then
         addon.config.db.reportHelperTipShown = true
         HelpTip:Show(
-            LFGSpamFilterReportHelperButton,
+            LFGSpamFilter_ReportHelperButton,
             {
                 text = 'Click this button 3 times to report the group for advertisement!'
                     .. '\n\nRight-click to dismiss. You can turn this off in options.',

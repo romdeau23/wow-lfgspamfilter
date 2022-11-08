@@ -4,19 +4,43 @@ local latestVersion = 9
 
 function config.init()
     if LFGSpamFilterAddonConfig then
-        -- load and migrate existing config
+        -- try to load and migrate existing config
         config.db = LFGSpamFilterAddonConfig
 
-        if not pcall(private.migrateConfiguration) then
-            config.db = private.getDefaultConfig() -- reset on error
+        local success, result = pcall(private.migrateConfiguration)
+
+        if not success then
+            -- reset config on migration error
+            private.loadDefaultConfig()
+            CallErrorHandler(result)
         end
     else
-        -- set default config
-        LFGSpamFilterAddonConfig = private.getDefaultConfig()
-        config.db = LFGSpamFilterAddonConfig
+        -- no config data yet - load default
+        private.loadDefaultConfig()
     end
+end
 
-    private.maintenance()
+function private.loadDefaultConfig()
+    LFGSpamFilterAddonConfig = private.getDefaultConfig()
+    config.db = LFGSpamFilterAddonConfig
+end
+
+function private.getDefaultConfig()
+    return {
+        version = latestVersion,
+        banButton = true,
+        ignoredCategories = {},
+        bannedPlayers = {},
+        numberOfBannedPlayers = 0,
+        filterBanned = true,
+        lastBan = nil,
+        noVoice = false,
+        maxAge = 4 * 3600,
+        lastMaintenance = time(),
+        buttonTipShown = false,
+        reportHelper = true,
+        reportHelperTipShown = false,
+    }
 end
 
 function config.isIgnoredCategory(category)
@@ -60,24 +84,6 @@ function config.isBannedPlayer(name)
     end
 
     return false
-end
-
-function private.getDefaultConfig()
-    return {
-        version = latestVersion,
-        banButton = true,
-        ignoredCategories = {},
-        bannedPlayers = {},
-        numberOfBannedPlayers = 0,
-        filterBanned = true,
-        lastBan = nil,
-        noVoice = false,
-        maxAge = 4 * 3600,
-        lastMaintenance = time(),
-        buttonTipShown = false,
-        reportHelper = true,
-        reportHelperTipShown = false,
-    }
 end
 
 function private.migrateConfiguration()

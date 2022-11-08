@@ -7,7 +7,11 @@ function ui.init()
 end
 
 function ui.message(text, ...)
-    message(string.format('|cffffffff' .. text, ...), true)
+    message(string.format(WHITE_FONT_COLOR_CODE .. text, ...), true)
+end
+
+function ui.errorMessage(text, ...)
+    message(string.format(text, ...), true)
 end
 
 function ui.isLfgSearchOpen()
@@ -35,8 +39,8 @@ function ui.updateLfgResults()
 end
 
 function ui.hidePopups()
-    LFGSpamFilterOptions:Hide()
-    LFGSpamFilterBanButton:Hide()
+    addon.ui.options.toggle(false)
+    addon.ui.banButton.hide()
     addon.ui.reportHelper.stop()
 end
 

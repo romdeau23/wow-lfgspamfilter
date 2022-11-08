@@ -13,54 +13,54 @@ function statusButton.init()
         statusButtonLeftOffset = statusButtonLeftOffset - 75
     end
 
-    LFGSpamFilterStatusButton.tooltip = ''
-    LFGSpamFilterStatusButton:SetParent(LFGListFrame.SearchPanel)
-    LFGSpamFilterStatusButton:SetPoint('TOPRIGHT', LFGListFrame.SearchPanel, 'TOPRIGHT', -44 + statusButtonLeftOffset, -25)
-    LFGSpamFilterStatusButton:Show()
+    LFGSpamFilter_StatusButton.tooltip = ''
+    LFGSpamFilter_StatusButton:SetParent(LFGListFrame.SearchPanel)
+    LFGSpamFilter_StatusButton:SetPoint('TOPRIGHT', LFGListFrame.SearchPanel, 'TOPRIGHT', -44 + statusButtonLeftOffset, -25)
+    LFGSpamFilter_StatusButton:Show()
 end
 
 function statusButton.updateActive(acceptedCount, rejectedCount, isInverted)
     private.maybeShowButtonTip()
 
     if isInverted then
-        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking2')
-        LFGSpamFilterStatusButton.Text:Show()
-        LFGSpamFilterStatusButton.TextFrame:Show()
-        LFGSpamFilterStatusButton.Text:SetText(string.format('|cffff0000%d|r', acceptedCount))
-        LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 1, 1)
-        LFGSpamFilterStatusButton.Icon:SetDesaturated(nil)
+        LFGSpamFilter_StatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking2')
+        LFGSpamFilter_StatusButton.Text:Show()
+        LFGSpamFilter_StatusButton.TextFrame:Show()
+        LFGSpamFilter_StatusButton.Text:SetText(string.format('%s%d|r', RED_FONT_COLOR_CODE, acceptedCount))
+        LFGSpamFilter_StatusButton.Icon:SetVertexColor(1, 1, 1)
+        LFGSpamFilter_StatusButton.Icon:SetDesaturated(nil)
 
         if acceptedCount > 0 then
-            LFGSpamFilterStatusButton.tooltip = string.format(
+            LFGSpamFilter_StatusButton.tooltip = string.format(
                 'LFGSpamFilter would filter %d groups\n%s',
                 acceptedCount,
                 usageHint
             )
         else
-            LFGSpamFilterStatusButton.tooltip = string.format(
+            LFGSpamFilter_StatusButton.tooltip = string.format(
                 'LFGSpamFilter would not filter any groups\n%s',
                 usageHint
             )
         end
     elseif rejectedCount > 0 then
-        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking0')
-        LFGSpamFilterStatusButton.Text:Show()
-        LFGSpamFilterStatusButton.TextFrame:Show()
-        LFGSpamFilterStatusButton.Text:SetText(tostring(math.min(99, rejectedCount)))
-        LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 0, 0)
-        LFGSpamFilterStatusButton.Icon:SetDesaturated(nil)
-        LFGSpamFilterStatusButton.tooltip = string.format(
+        LFGSpamFilter_StatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking0')
+        LFGSpamFilter_StatusButton.Text:Show()
+        LFGSpamFilter_StatusButton.TextFrame:Show()
+        LFGSpamFilter_StatusButton.Text:SetText(tostring(math.min(99, rejectedCount)))
+        LFGSpamFilter_StatusButton.Icon:SetVertexColor(1, 0, 0)
+        LFGSpamFilter_StatusButton.Icon:SetDesaturated(nil)
+        LFGSpamFilter_StatusButton.tooltip = string.format(
             'LFGSpamFilter has filtered %d groups\n%s',
             rejectedCount,
             usageHint
         )
     else
-        LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking0')
-        LFGSpamFilterStatusButton.Text:Hide()
-        LFGSpamFilterStatusButton.TextFrame:Hide()
-        LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 1, 1)
-        LFGSpamFilterStatusButton.Icon:SetDesaturated(1)
-        LFGSpamFilterStatusButton.tooltip = string.format(
+        LFGSpamFilter_StatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking0')
+        LFGSpamFilter_StatusButton.Text:Hide()
+        LFGSpamFilter_StatusButton.TextFrame:Hide()
+        LFGSpamFilter_StatusButton.Icon:SetVertexColor(1, 1, 1)
+        LFGSpamFilter_StatusButton.Icon:SetDesaturated(1)
+        LFGSpamFilter_StatusButton.tooltip = string.format(
             'LFGSpamFilter has not filtered any groups\n%s',
             usageHint
         )
@@ -68,11 +68,11 @@ function statusButton.updateActive(acceptedCount, rejectedCount, isInverted)
 end
 
 function statusButton.updateInactive()
-    LFGSpamFilterStatusButton.Text:Hide()
-    LFGSpamFilterStatusButton.TextFrame:Hide()
-    LFGSpamFilterStatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking4')
-    LFGSpamFilterStatusButton.Icon:SetVertexColor(1, 1, 1)
-    LFGSpamFilterStatusButton.tooltip = string.format(
+    LFGSpamFilter_StatusButton.Text:Hide()
+    LFGSpamFilter_StatusButton.TextFrame:Hide()
+    LFGSpamFilter_StatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking4')
+    LFGSpamFilter_StatusButton.Icon:SetVertexColor(1, 1, 1)
+    LFGSpamFilter_StatusButton.tooltip = string.format(
         'LFGSpamFilter is disabled for this category\n%s',
         usageHint
     )
@@ -81,12 +81,8 @@ end
 function statusButton.onClick(button)
     if button == 'LeftButton' then
         -- toggle options on left click
-        if LFGSpamFilterOptions:IsVisible() then
-            LFGSpamFilterOptions:Hide()
-        else
-            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-            LFGSpamFilterOptions:Show()
-        end
+        addon.ui.options.toggle()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
     elseif button == 'RightButton' then
         -- toggle category on right click
         local category = addon.ui.getCurrentLfgCategory()
@@ -105,10 +101,10 @@ function statusButton.onClick(button)
 end
 
 function private.maybeShowButtonTip()
-    if not addon.config.db.buttonTipShown and LFGSpamFilterStatusButton:IsVisible() then
+    if not addon.config.db.buttonTipShown and LFGSpamFilter_StatusButton:IsVisible() then
         addon.config.db.buttonTipShown = true
         HelpTip:Show(
-            LFGSpamFilterStatusButton,
+            LFGSpamFilter_StatusButton,
             {
                 text = 'This is the LFGSpamFilter status button.\n\n'
                     .. 'Click on it for options.\n'

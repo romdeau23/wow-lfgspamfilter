@@ -9,6 +9,11 @@ end
 
 function main.banPlayer(name)
     addon.config.banPlayer(private.normalizePlayerName(name))
+    addon.ui.updateLfgResults()
+
+    if addon.ui.options.isOpen() then
+        addon.ui.options.updateState()
+    end
 end
 
 function main.setInvertFilter(enabled)
@@ -123,6 +128,5 @@ function private.onReport(reportInfo, reportPlayerLocation)
         and ReportFrame.playerName
     then
         main.banPlayer(ReportFrame.playerName)
-        addon.ui.updateLfgResults()
     end
 end

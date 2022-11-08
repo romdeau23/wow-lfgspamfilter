@@ -1,0 +1,250 @@
+<Ui
+    xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd"
+>
+    <Frame name="LFGSpamFilter_OptionsRowTemplate" virtual="true">
+        <Size x="168" y="23"/>
+
+        <Layers>
+            <Layer>
+                <FontString parentKey="Title" inherits="GameFontHighlightSmall" wordwrap="false">
+                    <Size x="0" y="10"/>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Scripts>
+            <OnLoad>
+                self.Title:SetText(self.label)
+                self.Title:SetPoint('TOPLEFT', 25 + (self.labelOffset or 0), -6)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <Frame name="LFGSpamFilter_OptionsCheckboxTemplate" inherits="UICheckButtonTemplate" virtual="true">
+        <Size x="24" y="24"/>
+
+        <Anchors>
+            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="0"/>
+        </Anchors>
+    </Frame>
+
+    <Frame name="LFGSpamFilter_Options" parent="UIParent" enableMouse="true" hidden="true" inherits="TooltipBackdropTemplate" frameStrata="DIALOG">
+        <Size x="192" y="285"/>
+
+        <Anchors>
+            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="LFGSpamFilter_StatusButton" x="0" y="1"/>
+        </Anchors>
+
+        <KeyValues>
+            <KeyValue key="backdropColor" value="BLACK_FONT_COLOR" type="global"/>
+            <KeyValue key="backdropColorAlpha" value="0.9" type="number"/>
+            <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
+        </KeyValues>
+
+        <Scripts>
+            <OnShow>
+                LFGSpamFilterAddon.ui.options.load()
+                LFGSpamFilterAddon.ui.options.updateState()
+            </OnShow>
+            <OnHide>
+                LFGSpamFilterAddon.ui.options.apply()
+            </OnHide>
+        </Scripts>
+
+        <Layers>
+            <Layer>
+                <FontString inherits="GameFontHighlightSmall" wordwrap="false" text="Group filters">
+                    <Size x="0" y="10"/>
+
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-40"/>
+                    </Anchors>
+                </FontString>
+
+                <FontString inherits="GameFontHighlightSmall" wordwrap="false" text="Options">
+                    <Size x="0" y="10"/>
+
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-108"/>
+                    </Anchors>
+                </FontString>
+
+                <FontString parentKey="BannedPlayersHeading" inherits="GameFontHighlightSmall" wordwrap="false">
+                    <Size x="0" y="10"/>
+
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-176"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Frame parentKey="FilterCategory" inherits="LFGSpamFilter_OptionsRowTemplate">
+                <KeyValues>
+                    <KeyValue key="label" value="filter this category"/>
+                </KeyValues>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="12" y="-10"/>
+                </Anchors>
+
+                <Frames>
+                    <CheckButton parentKey="Checkbox" inherits="LFGSpamFilter_OptionsCheckboxTemplate"/>
+                </Frames>
+            </Frame>
+
+            <Frame parentKey="NoVoice" inherits="LFGSpamFilter_OptionsRowTemplate">
+                <KeyValues>
+                    <KeyValue key="label" value="groups with voice chat"/>
+                </KeyValues>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-54"/>
+                </Anchors>
+
+                <Frames>
+                    <CheckButton parentKey="Checkbox" inherits="LFGSpamFilter_OptionsCheckboxTemplate"/>
+                </Frames>
+            </Frame>
+
+            <Frame parentKey="MaxAge" inherits="LFGSpamFilter_OptionsRowTemplate">
+                <KeyValues>
+                    <KeyValue key="label" value="hours max group age"/>
+                    <KeyValue key="labelOffset" value="13" type="number"/>
+                </KeyValues>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-76"/>
+                </Anchors>
+
+                <Frames>
+                    <EditBox parentKey="EditBox" inherits="InputBoxTemplate" autoFocus="false" letters="3">
+                        <Size x="25" y="20"/>
+
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="8.5" y="0"/>
+                        </Anchors>
+
+                        <Scripts>
+                            <OnEscapePressed>
+                                self:ClearFocus()
+                            </OnEscapePressed>
+                            <OnEnterPressed>
+                                self:ClearFocus()
+                            </OnEnterPressed>
+                        </Scripts>
+
+                        <TextInsets>
+                            <AbsInset left="-1.5" right="-1.5"/>
+                        </TextInsets>
+                    </EditBox>
+                </Frames>
+            </Frame>
+
+            <Frame parentKey="BanButton" inherits="LFGSpamFilter_OptionsRowTemplate">
+                <KeyValues>
+                    <KeyValue key="label" value="show ban button"/>
+                </KeyValues>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-122"/>
+                </Anchors>
+
+                <Frames>
+                    <CheckButton parentKey="Checkbox" inherits="LFGSpamFilter_OptionsCheckboxTemplate">
+                        <Scripts>
+                            <OnClick>
+                                LFGSpamFilterAddon.ui.options.updateState()
+                            </OnClick>
+                        </Scripts>
+                    </CheckButton>
+                </Frames>
+            </Frame>
+
+            <Frame parentKey="ReportHelper" inherits="LFGSpamFilter_OptionsRowTemplate">
+                <KeyValues>
+                    <KeyValue key="label" value="show report helper"/>
+                </KeyValues>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-144"/>
+                </Anchors>
+
+                <Frames>
+                    <CheckButton parentKey="Checkbox" inherits="LFGSpamFilter_OptionsCheckboxTemplate"/>
+                </Frames>
+            </Frame>
+
+            <Frame parentKey="FilterBanned" inherits="LFGSpamFilter_OptionsRowTemplate">
+                <KeyValues>
+                    <KeyValue key="label" value="filter banned players"/>
+                </KeyValues>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-190"/>
+                </Anchors>
+
+                <Frames>
+                    <CheckButton parentKey="Checkbox" inherits="LFGSpamFilter_OptionsCheckboxTemplate"/>
+                </Frames>
+            </Frame>
+
+            <Button parentKey="UnbanAll" inherits="UIPanelButtonGrayTemplate" text="Unban all">
+                <Size x="73" y="20"/>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-216"/>
+                </Anchors>
+
+                <Scripts>
+                    <OnClick>
+                        LFGSpamFilterAddon.ui.options.onUnbanAllClick()
+                    </OnClick>
+                </Scripts>
+
+                <NormalFont style="GameFontNormalSmall"/>
+                <HighlightFont style="GameFontHighlightSmall"/>
+                <DisabledFont style="GameFontDisableSmall"/>
+            </Button>
+
+            <Button parentKey="UnbanLast" inherits="UIPanelButtonGrayTemplate" text="Unban last">
+                <Size x="73" y="20"/>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-216"/>
+                </Anchors>
+
+                <Scripts>
+                    <OnClick>
+                        LFGSpamFilterAddon.ui.options.onUnbanLastClick()
+                    </OnClick>
+                </Scripts>
+
+                <NormalFont style="GameFontNormalSmall"/>
+                <HighlightFont style="GameFontHighlightSmall"/>
+                <DisabledFont style="GameFontDisableSmall"/>
+            </Button>
+
+            <Button parentKey="OkButton" inherits="UIPanelButtonNoTooltipTemplate" text="OK">
+                <Size x="151" y="20"/>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-250"/>
+                </Anchors>
+
+                <Scripts>
+                    <OnClick>
+                        LFGSpamFilter_Options:Hide()
+                    </OnClick>
+                </Scripts>
+
+                <NormalFont style="GameFontNormalSmall"/>
+                <HighlightFont style="GameFontHighlightSmall"/>
+                <DisabledFont style="GameFontDisableSmall"/>
+            </Button>
+        </Frames>
+    </Frame>
+</Ui>

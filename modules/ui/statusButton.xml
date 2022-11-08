@@ -1,0 +1,58 @@
+<Ui
+    xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd"
+>
+    <Button name="LFGSpamFilter_StatusButton" registerForClicks="LeftButtonUp,RightButtonUp,MiddleButtonUp" hidden="true">
+        <Size x="32" y="32"/>
+
+        <Layers>
+            <Layer textureSubLevel="5">
+                <Texture parentKey="Icon">
+                    <Size x="24" y="24"/>
+
+                    <Anchors>
+                        <Anchor point="CENTER" x="-1" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+
+            <Layer textureSubLevel="6">
+                <Texture parentKey="TextFrame" file="Interface\Buttons\UI-Quickslot">
+                    <Size x="20" y="20"/>
+
+                    <Anchors>
+                        <Anchor point="CENTER" x="8" y="-8"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+
+            <Layer textureSubLevel="7">
+                <FontString parentKey="Text" inherits="GameFontNormalSmall" text="0">
+                    <Size x="0" y="0"/>
+
+                    <Anchors>
+                        <Anchor point="CENTER" x="8" y="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <NormalTexture file="Interface\Buttons\UI-SquareButton-Up"/>
+        <PushedTexture file="Interface\Buttons\UI-SquareButton-Down"/>
+        <DisabledTexture file="Interface\Buttons\UI-SquareButton-Disabled"/>
+        <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+
+        <Scripts>
+            <OnEnter>
+                GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+                GameTooltip:SetText(self.tooltip)
+            </OnEnter>
+            <OnClick>
+                LFGSpamFilterAddon.ui.statusButton.onClick(button)
+                GameTooltip_Hide()
+            </OnClick>
+            <OnLeave function="GameTooltip_Hide"/>
+        </Scripts>
+    </Button>
+</Ui>
