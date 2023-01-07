@@ -11,18 +11,24 @@ function banButton.hide()
     LFGSpamFilter_BanButton:Hide()
 end
 
-function banButton.onClick()
+function banButton.onClick(button)
     local resultId = LFGSpamFilter_BanButton.resultId
 
     if resultId then
         local info = C_LFGList.GetSearchResultInfo(resultId)
 
         if info and info.leaderName then
-            if addon.config.db.reportHelper and not InCombatLockdown() then
-                LFGList_ReportListing(resultId, info.leaderName)
-                addon.ui.reportHelper.begin()
-            else
-                addon.main.banPlayer(info.leaderName)
+            if button == 'LeftButton' then
+                -- report/ban
+                if addon.config.db.reportHelper and not InCombatLockdown() then
+                    LFGList_ReportListing(resultId, info.leaderName)
+                    addon.ui.reportHelper.begin()
+                else
+                    addon.main.banPlayer(info.leaderName)
+                end
+            elseif button == 'RightButton' then
+                -- temporary ban
+                addon.tempBan.ban(info.leaderName)
             end
         end
     end

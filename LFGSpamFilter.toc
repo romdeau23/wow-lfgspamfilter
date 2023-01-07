@@ -1,6 +1,6 @@
 ## Interface: 100002
 ## Title: LFGSpamFilter
-## Version: 1.4.1
+## Version: 1.5.0
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering and quick reporting
 ## SavedVariables: LFGSpamFilterAddonConfig
@@ -12,6 +12,7 @@ lib/event.lua
 lib/module.lua
 modules/config.lua
 modules/interop.lua
+modules/tempBan.lua
 modules/ui.lua
 modules/ui/statusButton.xml
 modules/ui/statusButton.lua

@@ -76,6 +76,12 @@ function options.updateState()
         addon.config.db.numberOfBannedPlayers
     ))
 
+    -- temp banned players heading
+    LFGSpamFilter_Options.TempBannedPlayersHeading:SetText(string.format(
+        'Temporarily banned players (%d)',
+        addon.tempBan.getCount()
+    ))
+
     -- report helper
     local banButtonEnabled = LFGSpamFilter_Options.BanButton.Checkbox:GetChecked()
 
@@ -111,4 +117,18 @@ function options.onUnbanLastClick()
     else
         addon.ui.errorMessage('There\'s noone to unban')
     end
+end
+
+function options.onClearTempBansClick()
+    if addon.tempBan.getCount() > 0 then
+        addon.tempBan.clear()
+        options.updateState()
+    end
+end
+
+function options.onTempBanHelpClick()
+    addon.ui.message(
+        'Temporary bans expire after you relog.\n\n'
+        .. 'To issue a temporary ban, right-click the ban button instead of left-clicking.'
+    )
 end

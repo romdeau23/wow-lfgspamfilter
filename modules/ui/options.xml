@@ -31,7 +31,7 @@
     </Frame>
 
     <Frame name="LFGSpamFilter_Options" parent="UIParent" enableMouse="true" hidden="true" inherits="TooltipBackdropTemplate" frameStrata="DIALOG">
-        <Size x="192" y="285"/>
+        <Size x="192" y="327"/>
 
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="LFGSpamFilter_StatusButton" x="0" y="1"/>
@@ -76,6 +76,14 @@
 
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-176"/>
+                    </Anchors>
+                </FontString>
+
+                <FontString parentKey="TempBannedPlayersHeading" inherits="GameFontHighlightSmall" wordwrap="false">
+                    <Size x="0" y="10"/>
+
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-248"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -228,11 +236,47 @@
                 <DisabledFont style="GameFontDisableSmall"/>
             </Button>
 
+            <Button parentKey="ClearTempBans" inherits="UIPanelButtonGrayTemplate" text="Clear all">
+                <Size x="73" y="20"/>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-262"/>
+                </Anchors>
+
+                <Scripts>
+                    <OnClick>
+                        LFGSpamFilterAddon.ui.options.onClearTempBansClick()
+                    </OnClick>
+                </Scripts>
+
+                <NormalFont style="GameFontNormalSmall"/>
+                <HighlightFont style="GameFontHighlightSmall"/>
+                <DisabledFont style="GameFontDisableSmall"/>
+            </Button>
+
+            <Button parentKey="TempBanHelp" inherits="UIPanelButtonGrayTemplate" text="?">
+                <Size x="30" y="20"/>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-262"/>
+                </Anchors>
+
+                <Scripts>
+                    <OnClick>
+                        LFGSpamFilterAddon.ui.options.onTempBanHelpClick()
+                    </OnClick>
+                </Scripts>
+
+                <NormalFont style="GameFontNormalSmall"/>
+                <HighlightFont style="GameFontHighlightSmall"/>
+                <DisabledFont style="GameFontDisableSmall"/>
+            </Button>
+
             <Button parentKey="OkButton" inherits="UIPanelButtonNoTooltipTemplate" text="OK">
                 <Size x="151" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-250"/>
+                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="22" y="15"/>
                 </Anchors>
 
                 <Scripts>

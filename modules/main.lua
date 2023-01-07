@@ -94,19 +94,28 @@ function private.filterTable(input, callback)
 end
 
 function private.accept(info)
-    return (
-        addon.config.db.maxAge == nil
-        or info.age <= addon.config.db.maxAge
-    )
-    and (
-        not addon.config.db.filterBanned
-        or info.leaderName == nil
-        or not addon.config.isBannedPlayer(private.normalizePlayerName(info.leaderName))
-    )
-    and (
-        info.voiceChat == ''
-        or not addon.config.db.noVoice
-    )
+    if addon.config.db.maxAge ~= nil and info.age > addon.config.db.maxAge then
+        return false -- max age exceeded
+    end
+
+    if info.leaderName ~= nil then
+        local leaderName = private.normalizePlayerName(info.leaderName)
+
+        if addon.config.db.filterBanned and addon.config.isBannedPlayer(leaderName) then
+            return false -- banned player
+        end
+
+        if addon.tempBan.isBanned(leaderName) then
+            return false -- temp banned player
+        end
+    end
+
+    if addon.config.db.noVoice and info.voiceChat ~= '' then
+        return false -- voice chat filled
+    end
+
+    -- all ok
+    return true
 end
 
 function private.normalizePlayerName(name)
