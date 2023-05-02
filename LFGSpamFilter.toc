@@ -1,6 +1,6 @@
-## Interface: 100005
+## Interface: 100100
 ## Title: LFGSpamFilter
-## Version: 1.5.1
+## Version: 1.5.2
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering and quick reporting
 ## SavedVariables: LFGSpamFilterAddonConfig
