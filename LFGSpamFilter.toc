@@ -1,10 +1,11 @@
-## Interface: 100100
+## Interface: 100105
 ## Title: LFGSpamFilter
-## Version: 1.5.2
+## Version: 1.5.3
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering and quick reporting
 ## SavedVariables: LFGSpamFilterAddonConfig
 ## OptionalDeps: PremadeGroupsFilter
+## IconTexture: Interface\AddOns\LFGSpamFilter\icon
 ## X-Website: https://github.com/romdeau23/wow-lfgspamfilter
 
 lib/globals.lua
