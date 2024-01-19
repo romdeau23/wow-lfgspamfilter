@@ -14,6 +14,8 @@ function config.init()
             private.loadDefaultConfig()
             CallErrorHandler(result)
         end
+
+        private.maintenance()
     else
         -- no config data yet - load default
         private.loadDefaultConfig()
