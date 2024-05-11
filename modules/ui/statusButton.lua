@@ -26,7 +26,7 @@ function statusButton.updateActive(acceptedCount, rejectedCount, isInverted)
         LFGSpamFilter_StatusButton.Icon:SetTexture('Interface\\LFGFRAME\\BattlenetWorking2')
         LFGSpamFilter_StatusButton.Text:Show()
         LFGSpamFilter_StatusButton.TextFrame:Show()
-        LFGSpamFilter_StatusButton.Text:SetText(string.format('%s%d|r', RED_FONT_COLOR_CODE, acceptedCount))
+        LFGSpamFilter_StatusButton.Text:SetText(string.format('%s%d|r', RED_FONT_COLOR_CODE, math.min(99, acceptedCount)))
         LFGSpamFilter_StatusButton.Icon:SetVertexColor(1, 1, 1)
         LFGSpamFilter_StatusButton.Icon:SetDesaturated(nil)
 

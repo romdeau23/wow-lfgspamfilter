@@ -24,7 +24,7 @@ function main.isFilterInverted()
     return invertFilter
 end
 
-function private.filter(results)
+function private.filter(frame)
     -- do nothing if LFG search is not open
     if not addon.ui.isLfgSearchOpen() then
         return
@@ -40,7 +40,7 @@ function private.filter(results)
     end
 
     -- filter results
-    local acceptedCount, rejectedCount = private.filterTable(results, function (resultId)
+    local acceptedCount, rejectedCount = private.filterTable(frame.results, function (resultId)
         local info = C_LFGList.GetSearchResultInfo(resultId)
 
         if info then
