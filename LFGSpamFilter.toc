@@ -1,8 +1,8 @@
-## Interface: 100207
+## Interface: 110002
 ## Title: LFGSpamFilter
-## Version: 1.5.6
+## Version: 1.6.0
 ## Author: romdeau23
-## Notes: LFG tool spam filtering and quick reporting
+## Notes: LFG tool spam filtering and reporting
 ## SavedVariables: LFGSpamFilterAddonConfig
 ## OptionalDeps: PremadeGroupsFilter
 ## IconTexture: Interface\AddOns\LFGSpamFilter\icon
@@ -17,8 +17,6 @@ modules/tempBan.lua
 modules/ui.lua
 modules/ui/statusButton.xml
 modules/ui/statusButton.lua
-modules/ui/reportHelper.xml
-modules/ui/reportHelper.lua
 modules/ui/banButton.xml
 modules/ui/banButton.lua
 modules/ui/options.xml

@@ -41,7 +41,6 @@ end
 function ui.hidePopups()
     addon.ui.options.toggle(false)
     addon.ui.banButton.hide()
-    addon.ui.reportHelper.stop()
 end
 
 function private.resetUiState()

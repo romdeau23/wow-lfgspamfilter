@@ -1,6 +1,6 @@
 local _, addon = ...
 local config, private = addon.module('config')
-local latestVersion = 9
+local latestVersion = 10
 
 function config.init()
     if LFGSpamFilterAddonConfig then
@@ -40,8 +40,7 @@ function private.getDefaultConfig()
         maxAge = 4 * 3600,
         lastMaintenance = time(),
         buttonTipShown = false,
-        reportHelper = true,
-        reportHelperTipShown = false,
+        openReportWindow = true,
     }
 end
 
@@ -169,6 +168,12 @@ private.migrations = {
         config.db.filterApplications = nil
         config.db.lastMaintenance = 0
         config.db.buttonTipShown = false
+    end,
+
+    [10] = function ()
+        config.db.openReportWindow = config.db.reportHelper
+        config.db.reportHelper = nil
+        config.db.reportHelperTipShown = nil
     end,
 }
 

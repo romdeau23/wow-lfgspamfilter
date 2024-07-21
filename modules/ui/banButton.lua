@@ -20,15 +20,14 @@ function banButton.onClick(button)
         if info and info.leaderName then
             if button == 'LeftButton' then
                 -- report/ban
-                if addon.config.db.reportHelper and not InCombatLockdown() then
+                if addon.config.db.openReportWindow and not InCombatLockdown() then
                     LFGList_ReportListing(resultId, info.leaderName)
-                    addon.ui.reportHelper.begin()
                 else
-                    addon.main.banPlayer(info.leaderName)
+                    addon.main.banPlayer(info.leaderName, false)
                 end
             elseif button == 'RightButton' then
                 -- temporary ban
-                addon.tempBan.ban(info.leaderName)
+                addon.main.banPlayer(info.leaderName, true)
             end
         end
     end
@@ -45,7 +44,7 @@ function private.onLfgSearchEntryUpdate(entry)
 end
 
 function private.onLfgSearchEntryEnter(entry)
-    if addon.config.db.banButton and not addon.ui.reportHelper.isActive() then
+    if addon.config.db.banButton and not ReportFrame:IsShown() then
         LFGSpamFilter_BanButton.resultId = entry.resultID
         LFGSpamFilter_BanButton:ClearAllPoints()
         LFGSpamFilter_BanButton:SetPoint('LEFT', entry, 'LEFT', -23, 0)

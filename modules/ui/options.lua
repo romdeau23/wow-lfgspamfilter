@@ -32,8 +32,8 @@ function options.load()
     -- ban button
     LFGSpamFilter_Options.BanButton.Checkbox:SetChecked(addon.config.db.banButton)
 
-    -- report helper
-    LFGSpamFilter_Options.ReportHelper.Checkbox:SetChecked(addon.config.db.reportHelper)
+    -- open report window
+    LFGSpamFilter_Options.OpenReportWindow.Checkbox:SetChecked(addon.config.db.openReportWindow)
 
     -- filter banned
     LFGSpamFilter_Options.FilterBanned.Checkbox:SetChecked(addon.config.db.filterBanned)
@@ -59,8 +59,8 @@ function options.apply()
     -- ban button
     addon.config.db.banButton = LFGSpamFilter_Options.BanButton.Checkbox:GetChecked()
 
-    -- report helper
-    addon.config.db.reportHelper = LFGSpamFilter_Options.ReportHelper.Checkbox:GetChecked()
+    -- open report window
+    addon.config.db.openReportWindow = LFGSpamFilter_Options.OpenReportWindow.Checkbox:GetChecked()
 
     -- filter banned
     addon.config.db.filterBanned = LFGSpamFilter_Options.FilterBanned.Checkbox:GetChecked()
@@ -82,11 +82,11 @@ function options.updateState()
         addon.tempBan.getCount()
     ))
 
-    -- report helper
+    -- open report window
     local banButtonEnabled = LFGSpamFilter_Options.BanButton.Checkbox:GetChecked()
 
-    LFGSpamFilter_Options.ReportHelper:SetAlpha(banButtonEnabled and 1 or 0.5)
-    LFGSpamFilter_Options.ReportHelper.Checkbox:SetEnabled(banButtonEnabled)
+    LFGSpamFilter_Options.OpenReportWindow:SetAlpha(banButtonEnabled and 1 or 0.5)
+    LFGSpamFilter_Options.OpenReportWindow.Checkbox:SetEnabled(banButtonEnabled)
 end
 
 function options.onUnbanAllClick()

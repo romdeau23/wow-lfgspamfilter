@@ -25,6 +25,10 @@
     <Frame name="LFGSpamFilter_OptionsCheckboxTemplate" inherits="UICheckButtonTemplate" virtual="true">
         <Size x="24" y="24"/>
 
+        <HitRectInsets>
+            <AbsInset left="0" right="-130" top="0" bottom="0"/>
+        </HitRectInsets>
+
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="0"/>
         </Anchors>
@@ -172,9 +176,9 @@
                 </Frames>
             </Frame>
 
-            <Frame parentKey="ReportHelper" inherits="LFGSpamFilter_OptionsRowTemplate">
+            <Frame parentKey="OpenReportWindow" inherits="LFGSpamFilter_OptionsRowTemplate">
                 <KeyValues>
-                    <KeyValue key="label" value="show report helper"/>
+                    <KeyValue key="label" value="open report window"/>
                 </KeyValues>
 
                 <Anchors>

@@ -9,7 +9,7 @@ local getPlaystyleStringPrefixMap = {
 }
 
 function interop.isAddonEnabled(name)
-    return select(4, GetAddOnInfo(name)) == true
+    return select(4, C_AddOns.GetAddOnInfo(name)) == true
 end
 
 -- C_LFGList.GetPlaystyleString() is currently protected for whatever reason

@@ -7,8 +7,15 @@ function main.init()
     hooksecurefunc(C_ReportSystem, 'SendReport', private.onReport)
 end
 
-function main.banPlayer(name)
-    addon.config.banPlayer(private.normalizePlayerName(name))
+function main.banPlayer(name, temporary)
+    name = private.normalizePlayerName(name)
+
+    if temporary then
+        addon.tempBan.ban(name)
+    else
+        addon.config.banPlayer(name)
+    end
+
     addon.ui.updateLfgResults()
 
     if addon.ui.options.isOpen() then
@@ -136,6 +143,6 @@ function private.onReport(reportInfo, reportPlayerLocation)
         and bit.band(reportInfo.minorCategoryFlags, Enum.ReportMinorCategory.Advertisement) ~= 0
         and ReportFrame.playerName
     then
-        main.banPlayer(ReportFrame.playerName)
+        main.banPlayer(ReportFrame.playerName, false)
     end
 end

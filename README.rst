@@ -7,9 +7,9 @@ This small addon will help you combat spam in the LFG tool.
 Features
 ********
 
+- banning players by name
 - filtering previously banned or reported players
 - filtering based on group age or filled out voice chat
-- quickly filling out advertisement reports
 - temporary player bans
 
 **Please note that this filtering is not 100%. It should improve over time as you report more spam groups.**
@@ -46,17 +46,8 @@ When hovering a group, a red "X" will appear on the left side.
 * left click reports and bans the group leader
 * right click bans the group leader temporarily
 
-  * temporary bans expire after you relog (and the player is not reported)
+  * temporary bans expire after you relog (and the report window will not be opened)
   * you can also clear temporary bans in options
-
-
-Report helper
-=============
-
-After you ban a group a new button will appear at your mouse position. Clicking this button 3 times reports
-the group for advertisement. This can be disabled in options.
-
-Note: This functionality is not available while in combat.
 
 
 FAQ
@@ -69,17 +60,18 @@ Sadly, Blizzard has made it impossible for addons to read the content of group t
 and voice chat information. This limits the filtering to the other parameters and banning players by name.
 
 
-Why are multiple clicks required to report a group?
-===================================================
+Why do I have to report groups manually?
+========================================
 
-The report system update in 9.2.5 has made it impossible for addons to send reports directly.
+Since 11.0 it is mostly impossible for addons to interact with the report window without breaking it.
 
-If you don't want to report groups this way you can disable the "report helper" in options.
+By default, when banning a group, the report window will be opened for you. This can be disabled in options.
 
 
 Known issues
 ************
 
 - "Report Advertisement" context menu option doesn't always work - this is caused by UI taint from group filtering
-  and is not fixable at the moment, use the "Report Group" option or the ban button provided by this addon instead
+  and is not currently fixable; use the "Report Group" option or let this addon open the report window for you
+  (this is enabled by default)
 - errors related to calling ``GetPlaystyleString()`` - shouldn't happen if you have an authenticator on your account

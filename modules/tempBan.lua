@@ -15,11 +15,6 @@ function tempBan.ban(name)
     if not tempBan.isBanned(name) then
         banned[name] = true
         count = count + 1
-        addon.ui.updateLfgResults()
-
-        if addon.ui.options.isOpen() then
-            addon.ui.options.updateState()
-        end
     end
 end
 
