@@ -1,5 +1,5 @@
 local _, addon = ...
-local options, private = addon.module('ui', 'options')
+local options = addon.module('ui', 'options')
 
 function options.toggle(open)
     if open == nil then

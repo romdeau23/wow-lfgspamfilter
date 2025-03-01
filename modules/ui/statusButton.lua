@@ -1,5 +1,5 @@
 local _, addon = ...
-local statusButton, private = addon.module('ui', 'statusButton')
+local statusButton, private = addon.module('ui', 'statusButton'), {}
 local usageHint = DISABLED_FONT_COLOR_CODE .. '(left click for options, right to toggle, middle to invert)|r'
 
 function statusButton.init()

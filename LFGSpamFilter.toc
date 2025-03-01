@@ -1,6 +1,6 @@
-## Interface: 110007
+## Interface: 110100
 ## Title: LFGSpamFilter
-## Version: 1.6.3
+## Version: 1.6.4
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering and reporting
 ## SavedVariables: LFGSpamFilterAddonConfig
@@ -9,6 +9,7 @@
 ## X-Website: https://github.com/romdeau23/wow-lfgspamfilter
 
 lib/globals.lua
+lib/namespace.lua
 lib/event.lua
 lib/module.lua
 modules/config.lua

@@ -1,5 +1,5 @@
 local _, addon = ...
-local banButton, private = addon.module('ui', 'banButton')
+local banButton, private = addon.module('ui', 'banButton'), {}
 local hookedEntries = {}
 
 function banButton.init()

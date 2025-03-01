@@ -1,5 +1,5 @@
 local _, addon = ...
-local ui, private = addon.module('ui')
+local ui, private = addon.module('ui'), {}
 
 function ui.init()
     hooksecurefunc('LFGListFrame_SetActivePanel', private.resetUiState)

@@ -1,5 +1,5 @@
 local _, addon = ...
-local tempBan, private = addon.module('tempBan')
+local tempBan = addon.module('tempBan')
 local banned = {}
 local count = 0
 

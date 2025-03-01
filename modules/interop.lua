@@ -1,5 +1,5 @@
 local _, addon = ...
-local interop, private = addon.module('interop')
+local interop, private = addon.module('interop'), {}
 local getPlaystyleStringFixed = false
 local getPlaystyleStringPrefixMap = {
     isMythicPlusActivity = 'GROUP_FINDER_PVE_PLAYSTYLE',
