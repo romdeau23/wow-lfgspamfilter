@@ -1,6 +1,6 @@
-## Interface: 110107
+## Interface: 110107, 110200
 ## Title: LFGSpamFilter
-## Version: 1.6.5
+## Version: 1.6.6
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering and reporting
 ## SavedVariables: LFGSpamFilterAddonConfig

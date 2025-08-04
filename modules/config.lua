@@ -22,28 +22,6 @@ function config.init()
     end
 end
 
-function private.loadDefaultConfig()
-    LFGSpamFilterAddonConfig = private.getDefaultConfig()
-    config.db = LFGSpamFilterAddonConfig
-end
-
-function private.getDefaultConfig()
-    return {
-        version = latestVersion,
-        banButton = true,
-        ignoredCategories = {},
-        bannedPlayers = {},
-        numberOfBannedPlayers = 0,
-        filterBanned = true,
-        lastBan = nil,
-        noVoice = false,
-        maxAge = 4 * 3600,
-        lastMaintenance = time(),
-        buttonTipShown = false,
-        openReportWindow = true,
-    }
-end
-
 function config.isIgnoredCategory(category)
     return config.db.ignoredCategories[category] ~= nil
 end
@@ -85,6 +63,28 @@ function config.isBannedPlayer(name)
     end
 
     return false
+end
+
+function private.loadDefaultConfig()
+    LFGSpamFilterAddonConfig = private.getDefaultConfig()
+    config.db = LFGSpamFilterAddonConfig
+end
+
+function private.getDefaultConfig()
+    return {
+        version = latestVersion,
+        banButton = true,
+        ignoredCategories = {},
+        bannedPlayers = {},
+        numberOfBannedPlayers = 0,
+        filterBanned = true,
+        lastBan = nil,
+        noVoice = false,
+        maxAge = 4 * 3600,
+        lastMaintenance = time(),
+        buttonTipShown = false,
+        openReportWindow = true,
+    }
 end
 
 function private.migrateConfiguration()
