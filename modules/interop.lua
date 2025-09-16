@@ -8,10 +8,6 @@ local getPlaystyleStringPrefixMap = {
     isMythicActivity = 'GROUP_FINDER_PVE_MYTHICZERO_PLAYSTYLE',
 }
 
-function interop.isAddonEnabled(name)
-    return select(4, C_AddOns.GetAddOnInfo(name)) == true
-end
-
 -- C_LFGList.GetPlaystyleString() is currently protected for whatever reason
 -- and needs to be replaced to fix missing playstyle titles
 function interop.fixGetPlaystyleString()

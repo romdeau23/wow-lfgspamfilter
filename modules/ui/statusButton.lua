@@ -5,11 +5,11 @@ local usageHint = DISABLED_FONT_COLOR_CODE .. '(left click for options, right to
 function statusButton.init()
     local statusButtonLeftOffset = 0
 
-    if addon.interop.isAddonEnabled('PremadeGroupsFilter') then
+    if C_AddOns.IsAddOnLoaded('PremadeGroupsFilter') then
         statusButtonLeftOffset = statusButtonLeftOffset - 65
     end
 
-    if addon.interop.isAddonEnabled('WorldQuestTracker') then
+    if C_AddOns.IsAddOnLoaded('WorldQuestTracker') then
         statusButtonLeftOffset = statusButtonLeftOffset - 75
     end
 
