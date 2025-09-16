@@ -37,9 +37,6 @@ function private.filter(frame)
         return
     end
 
-    -- fix GetPlaystyleString() before tainting the result table
-    addon.interop.fixGetPlaystyleString()
-
     -- check ignored categories
     if addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory()) then
         addon.ui.statusButton.updateInactive()

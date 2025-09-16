@@ -7,12 +7,13 @@ This small addon will help you combat spam in the LFG tool.
 Features
 ********
 
-- banning players by name
-- filtering previously banned or reported players
-- filtering based on group age or filled out voice chat
+- multiple filtering modes (the default mode should catch most spam groups)
+- filtering groups from previously reported and/or banned players
 - temporary player bans
 
-**Please note that this filtering is not 100%. It should improve over time as you report more spam groups.**
+**Please note that this filtering is not 100%.**
+
+**The addon cannot simply search for things like "WTS" in group titles due to restrictions of the ingame APIs.**
 
 
 How to use
