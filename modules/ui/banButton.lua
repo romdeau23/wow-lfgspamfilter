@@ -44,7 +44,11 @@ function private.onLfgSearchEntryUpdate(entry)
 end
 
 function private.onLfgSearchEntryEnter(entry)
-    if addon.config.db.banButton and not ReportFrame:IsShown() then
+    if
+        addon.config.db.banButton
+        and not ReportFrame:IsShown()
+        and not addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory())
+    then
         LFGSpamFilter_BanButton.resultId = entry.resultID
         LFGSpamFilter_BanButton:ClearAllPoints()
         LFGSpamFilter_BanButton:SetPoint('LEFT', entry, 'LEFT', -23, 0)

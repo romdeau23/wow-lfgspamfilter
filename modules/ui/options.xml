@@ -3,6 +3,7 @@
     xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd"
 >
+    <!-- TEMPLATES -->
     <Frame name="LFGSpamFilter_OptionsRowTemplate" virtual="true">
         <Size x="168" y="23"/>
 
@@ -34,8 +35,9 @@
         </Anchors>
     </Frame>
 
+    <!-- OPTIONS FRAME -->
     <Frame name="LFGSpamFilter_Options" parent="UIParent" enableMouse="true" hidden="true" inherits="TooltipBackdropTemplate" frameStrata="DIALOG">
-        <Size x="192" y="327"/>
+        <Size x="192" y="333"/>
 
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="LFGSpamFilter_StatusButton" x="0" y="1"/>
@@ -71,7 +73,7 @@
                     <Size x="0" y="10"/>
 
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-108"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-114"/>
                     </Anchors>
                 </FontString>
 
@@ -79,7 +81,7 @@
                     <Size x="0" y="10"/>
 
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-176"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-182"/>
                     </Anchors>
                 </FontString>
 
@@ -87,7 +89,7 @@
                     <Size x="0" y="10"/>
 
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-248"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-254"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -108,19 +110,58 @@
                 </Frames>
             </Frame>
 
-            <Frame parentKey="NoVoice" inherits="LFGSpamFilter_OptionsRowTemplate">
-                <KeyValues>
-                    <KeyValue key="label" value="groups with voice chat"/>
-                </KeyValues>
-
+            <DropdownButton parentKey="FilterMode" inherits="WowStyle1DropdownTemplate">
+                <Size x="140" y="22"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-54"/>
                 </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        local options = {
+                            {value = LFGSpamFilterAddon.FilterMode.Default, label = 'default', descr = 'Filter out groups with a leader who has 0 M+ score and also voice chat filled in.\nTypically, all of these are spam groups.'},
+                            {value = LFGSpamFilterAddon.FilterMode.RequireNoVoice, label = 'no voice chat', descr = 'Filter out groups with voice chat filled in.\nThis can include legitimate groups.'},
+                            {value = LFGSpamFilterAddon.FilterMode.RequireScore, label = 'require score', descr = 'Filter out groups with a leader who has 0 M+ score.\nThis can include legitimate groups.'},
+                            {value = LFGSpamFilterAddon.FilterMode.None, label = 'none', descr = 'No additional filtering'},
+                        }
 
-                <Frames>
-                    <CheckButton parentKey="Checkbox" inherits="LFGSpamFilter_OptionsCheckboxTemplate"/>
-                </Frames>
-            </Frame>
+                        local function getOption(v)
+                            for _, option in ipairs(options) do
+                                if option.value == v then
+                                    return option
+                                end
+                            end
+
+                            error('Invalid option value ' .. v)
+                        end
+
+                        local value = LFGSpamFilterAddon.FilterMode.Default
+
+                        function self:SetValue(v)
+                            value = v
+                            self:SetDefaultText(getOption(v).label)
+                        end
+
+                        function self:GetValue()
+                            return value
+                        end
+
+                        self:SetupMenu(function(dropdown, root)
+                            root:CreateTitle('Select filter mode')
+
+                            for _, option in ipairs(options) do
+                                local button = root:CreateButton(
+                                    option.label,
+                                    function(data) self:SetValue(option.value) end
+                                )
+
+                                button:SetTooltip(
+                                    function(tooltip) tooltip:SetText(option.descr) end
+                                )
+                            end
+                        end)
+                    </OnLoad>
+                </Scripts>
+            </DropdownButton>
 
             <Frame parentKey="MaxAge" inherits="LFGSpamFilter_OptionsRowTemplate">
                 <KeyValues>
@@ -129,7 +170,7 @@
                 </KeyValues>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-76"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-82"/>
                 </Anchors>
 
                 <Frames>
@@ -162,7 +203,7 @@
                 </KeyValues>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-122"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-128"/>
                 </Anchors>
 
                 <Frames>
@@ -182,7 +223,7 @@
                 </KeyValues>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-144"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-150"/>
                 </Anchors>
 
                 <Frames>
@@ -196,7 +237,7 @@
                 </KeyValues>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-190"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-196"/>
                 </Anchors>
 
                 <Frames>
@@ -208,7 +249,7 @@
                 <Size x="73" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-216"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-222"/>
                 </Anchors>
 
                 <Scripts>
@@ -226,7 +267,7 @@
                 <Size x="73" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-216"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-222"/>
                 </Anchors>
 
                 <Scripts>
@@ -244,7 +285,7 @@
                 <Size x="73" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-262"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-268"/>
                 </Anchors>
 
                 <Scripts>
@@ -262,7 +303,7 @@
                 <Size x="30" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-262"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-268"/>
                 </Anchors>
 
                 <Scripts>

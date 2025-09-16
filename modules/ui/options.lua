@@ -19,8 +19,8 @@ function options.load()
         not addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory())
     )
 
-    -- no voice
-    LFGSpamFilter_Options.NoVoice.Checkbox:SetChecked(addon.config.db.noVoice)
+    -- filter mode
+    LFGSpamFilter_Options.FilterMode:SetValue(addon.config.db.filterMode)
 
     -- max age
     if addon.config.db.maxAge then
@@ -44,8 +44,8 @@ function options.apply()
     local filterCategory = LFGSpamFilter_Options.FilterCategory.Checkbox:GetChecked()
     addon.config.setIgnoredCategory(addon.ui.getCurrentLfgCategory(), not filterCategory)
 
-    -- no voice
-    addon.config.db.noVoice = LFGSpamFilter_Options.NoVoice.Checkbox:GetChecked()
+    -- filter mode
+    addon.config.db.filterMode = LFGSpamFilter_Options.FilterMode:GetValue()
 
     -- max age
     local maxAgeInput = tonumber(LFGSpamFilter_Options.MaxAge.EditBox:GetText())

@@ -105,6 +105,20 @@ function private.accept(info)
         return false -- max age exceeded
     end
 
+    if addon.config.db.filterMode == addon.FilterMode.Default then
+        if (info.leaderOverallDungeonScore or 0) == 0 and info.voiceChat ~= '' then
+            return false -- no score + filled out voice chat
+        end
+    elseif  addon.config.db.filterMode == addon.FilterMode.RequireNoVoice then
+        if info.voiceChat ~= '' then
+            return false -- voice chat filled
+        end
+    elseif  addon.config.db.filterMode == addon.FilterMode.RequireScore then
+        if (info.leaderOverallDungeonScore or 0) == 0 then
+            return false -- no score
+        end
+    end
+
     if info.leaderName ~= nil then
         local leaderName = private.normalizePlayerName(info.leaderName)
 
@@ -115,10 +129,6 @@ function private.accept(info)
         if addon.tempBan.isBanned(leaderName) then
             return false -- temp banned player
         end
-    end
-
-    if addon.config.db.noVoice and info.voiceChat ~= '' then
-        return false -- voice chat filled
     end
 
     -- all ok
