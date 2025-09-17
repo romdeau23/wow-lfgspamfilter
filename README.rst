@@ -72,7 +72,6 @@ By default, when banning a group, the report window will be opened for you. This
 Known issues
 ************
 
-- "Report Advertisement" context menu option doesn't always work - this is caused by UI taint from group filtering
-  and is not currently fixable; use the "Report Group" option or let this addon open the report window for you
-  (this is enabled by default)
-- errors related to calling ``GetPlaystyleString()`` - shouldn't happen if you have an authenticator on your account
+- "Report Advertisement" context menu option doesn't always work (or it just opens the report window) - this is
+  caused by UI taint from group filtering and is not currently fixable; use the "Report Group" option or let this
+  addon open the report window for you (this is enabled by default)
