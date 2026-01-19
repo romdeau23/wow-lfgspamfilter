@@ -1,8 +1,8 @@
-## Interface: 110107, 110200
+## Interface: 110207, 120000
 ## Title: LFGSpamFilter
-## Version: 1.7.2
+## Version: 1.7.3
 ## Author: romdeau23
-## Notes: LFG tool spam filtering and reporting
+## Notes: LFG tool spam filtering
 ## SavedVariables: LFGSpamFilterAddonConfig
 ## OptionalDeps: PremadeGroupsFilter
 ## IconTexture: Interface\AddOns\LFGSpamFilter\icon
