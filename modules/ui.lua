@@ -1,23 +1,31 @@
-local _, addon = ...
-local ui, private = addon.module('ui'), {}
+---@class Addon
+local addon = select(2, ...)
+local ui, private = addon.module(), {}
+addon.ui = ui
 
 function ui.init()
     hooksecurefunc('LFGListFrame_SetActivePanel', private.resetUiState)
     LFGListFrame:HookScript('OnHide', private.resetUiState)
 end
 
+---@param text string
+---@param ... any
 function ui.message(text, ...)
-    message(string.format(WHITE_FONT_COLOR_CODE .. text, ...), true)
+    SetBasicMessageDialogText(string.format(WHITE_FONT_COLOR_CODE .. text, ...), true)
 end
 
+---@param text string
+---@param ... any
 function ui.errorMessage(text, ...)
-    message(string.format(text, ...), true)
+    SetBasicMessageDialogText(string.format(text, ...), true)
 end
 
+---@return boolean
 function ui.isLfgSearchOpen()
     return LFGListFrame.SearchPanel:IsShown()
 end
 
+---@return string
 function ui.getCurrentLfgCategory()
     local suffix = ''
 

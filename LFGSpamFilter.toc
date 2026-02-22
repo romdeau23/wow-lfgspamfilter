@@ -1,6 +1,6 @@
-## Interface: 110207, 120000
+## Interface: 120001
 ## Title: LFGSpamFilter
-## Version: 1.7.3
+## Version: 1.8.0
 ## Author: romdeau23
 ## Notes: LFG tool spam filtering
 ## SavedVariables: LFGSpamFilterAddonConfig
@@ -19,11 +19,12 @@
 ## Category-zhCN: 地下城和团队副本
 ## Category-zhTW: 地城與團隊
 
+lib/gameEvent.lua
+lib/init.lua
+lib/const.lua
 lib/globals.lua
-lib/constants.lua
-lib/namespace.lua
-lib/event.lua
 lib/module.lua
+lib/savedVar.lua
 modules/config.lua
 modules/tempBan.lua
 modules/ui.lua

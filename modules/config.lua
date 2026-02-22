@@ -1,31 +1,58 @@
-local _, addon = ...
-local config, private = addon.module('config'), {}
-local latestVersion = 11
+---@class Addon
+local addon = select(2, ...)
+local config, private = addon.module(), {}
+addon.config = config
+
+---@type ConfigModule.Config
+local DEFAULT_CONFIG = {
+    banButton = true,
+    ignoredCategories = {},
+    bannedPlayers = {},
+    numberOfBannedPlayers = 0,
+    filterBanned = true,
+    lastBan = nil,
+    maxAge = 4 * 3600,
+    lastMaintenance = time(),
+    buttonTipShown = false,
+    openReportWindow = true,
+    filterMode = addon.const.filterModes.Default,
+    noCarry = true,
+}
+
+---@class (exact) ConfigModule.Config
+---@field banButton boolean
+---@field ignoredCategories table<number, true>
+---@field bannedPlayers table<string, integer>
+---@field numberOfBannedPlayers integer
+---@field filterBanned boolean
+---@field lastBan string?
+---@field maxAge integer
+---@field lastMaintenance integer
+---@field buttonTipShown boolean
+---@field openReportWindow boolean
+---@field filterMode FilterMode
+---@field noCarry boolean
 
 function config.init()
-    if LFGSpamFilterAddonConfig then
-        -- try to load and migrate existing config
-        config.db = LFGSpamFilterAddonConfig
+    ---@type ConfigModule.Config
+    config.db = addon.loadSavedVar(
+        'LFGSpamFilterAddonConfig',
+        12,
+        DEFAULT_CONFIG,
+        private.migrations
+    )
 
-        local success, result = pcall(private.migrateConfiguration)
-
-        if not success then
-            -- reset config on migration error
-            private.loadDefaultConfig()
-            CallErrorHandler(result)
-        end
-
-        private.maintenance()
-    else
-        -- no config data yet - load default
-        private.loadDefaultConfig()
-    end
+    private.maintenance()
 end
 
+---@param category string
+---@return boolean
 function config.isIgnoredCategory(category)
     return config.db.ignoredCategories[category] ~= nil
 end
 
+---@param category string
+---@param isIgnored boolean
 function config.setIgnoredCategory(category, isIgnored)
     if isIgnored then
         config.db.ignoredCategories[category] = true
@@ -34,6 +61,7 @@ function config.setIgnoredCategory(category, isIgnored)
     end
 end
 
+---@param name string
 function config.banPlayer(name)
     if not config.isBannedPlayer(name) then
         config.db.bannedPlayers[name] = time()
@@ -42,6 +70,7 @@ function config.banPlayer(name)
     end
 end
 
+---@param name string
 function config.unbanPlayer(name)
     if config.isBannedPlayer(name) then
         config.db.bannedPlayers[name] = nil
@@ -54,6 +83,8 @@ function config.unbanAllPlayers()
     config.db.numberOfBannedPlayers = 0
 end
 
+---@param name string
+---@return boolean
 function config.isBannedPlayer(name)
     if config.db.bannedPlayers[name] then
         -- update last seen time
@@ -65,123 +96,6 @@ function config.isBannedPlayer(name)
     return false
 end
 
-function private.loadDefaultConfig()
-    LFGSpamFilterAddonConfig = private.getDefaultConfig()
-    config.db = LFGSpamFilterAddonConfig
-end
-
-function private.getDefaultConfig()
-    return {
-        version = latestVersion,
-        banButton = true,
-        ignoredCategories = {},
-        bannedPlayers = {},
-        numberOfBannedPlayers = 0,
-        filterBanned = true,
-        lastBan = nil,
-        maxAge = 4 * 3600,
-        lastMaintenance = time(),
-        buttonTipShown = false,
-        openReportWindow = true,
-        filterMode = addon.FilterMode.Default,
-    }
-end
-
-function private.migrateConfiguration()
-    for to = config.db.version + 1, latestVersion do
-        private.migrations[to]()
-    end
-
-    config.db.version = latestVersion
-end
-
-private.migrations = {
-    [2] = function ()
-        config.db.blacklistEnabled = true
-    end,
-
-    [3] = function ()
-        config.db.button = true
-
-        if config.db.blacklistEnabled ~= false then
-            config.db.blacklistEnabled = true
-        end
-    end,
-
-    [4] = function ()
-        config.db.splash = true
-    end,
-
-    [5] = function ()
-        config.db.enabled = nil
-        config.db.splash = nil
-        config.db.quickReport = config.db.button
-        config.db.button = nil
-        config.db.ignoredCategories = {}
-        config.db.buttonTipShown = false
-
-        if config.db.maxAge == 0 then
-            config.db.maxAge = nil
-        end
-
-        if config.db.lastBan then
-            config.db.lastBan = config.db.lastBan.player
-        end
-
-        config.db.bannedPlayers = {}
-        config.db.numberOfBannedPlayers = 0
-        config.db.filterBanned = config.db.blacklistEnabled
-
-        for normalizedName, lastSeen in pairs(config.db.blacklist) do
-            local name, realm = strsplit('-', normalizedName, 2)
-            realm = realm:gsub('[%- ]', '')
-            normalizedName = name .. '-' .. realm
-
-            if config.db.bannedPlayers[normalizedName] == nil then
-                config.db.bannedPlayers[normalizedName] = lastSeen
-                config.db.numberOfBannedPlayers = config.db.numberOfBannedPlayers + 1
-            end
-        end
-
-        config.db.blacklist = nil
-        config.db.blacklistEnabled = nil
-    end,
-
-    [6] = function ()
-        config.db.stats = nil
-        config.db.filterApplications = true
-    end,
-
-    [7] = function ()
-        config.db.banButton = config.db.quickReport
-        config.db.quickReport = nil
-        config.db.report = nil
-        config.db.noVoice = false
-    end,
-
-    [8] = function ()
-        config.db.reportHelper = true
-        config.db.reportHelperTipShown = false
-    end,
-
-    [9] = function ()
-        config.db.filterApplications = nil
-        config.db.lastMaintenance = 0
-        config.db.buttonTipShown = false
-    end,
-
-    [10] = function ()
-        config.db.openReportWindow = config.db.reportHelper
-        config.db.reportHelper = nil
-        config.db.reportHelperTipShown = nil
-    end,
-
-    [11] = function ()
-        config.db.filterMode = addon.FilterMode.Default
-        config.db.noVoice = nil
-    end,
-}
-
 function private.maintenance()
     -- run maintenance once a week
     if time() - config.db.lastMaintenance > 604800 then
@@ -190,6 +104,7 @@ function private.maintenance()
     end
 end
 
+---@param threshold integer
 function private.cleanupBannedPlayers(threshold)
     local now = time()
     local newCount = 0
@@ -204,3 +119,95 @@ function private.cleanupBannedPlayers(threshold)
 
     config.db.numberOfBannedPlayers = newCount
 end
+
+
+private.migrations = {
+    [2] = function (data)
+        data.blacklistEnabled = true
+    end,
+
+    [3] = function (data)
+        data.button = true
+
+        if data.blacklistEnabled ~= false then
+            data.blacklistEnabled = true
+        end
+    end,
+
+    [4] = function (data)
+        data.splash = true
+    end,
+
+    [5] = function (data)
+        data.enabled = nil
+        data.splash = nil
+        data.quickReport = data.button
+        data.button = nil
+        data.ignoredCategories = {}
+        data.buttonTipShown = false
+
+        if data.maxAge == 0 then
+            data.maxAge = nil
+        end
+
+        if data.lastBan then
+            data.lastBan = data.lastBan.player
+        end
+
+        data.bannedPlayers = {}
+        data.numberOfBannedPlayers = 0
+        data.filterBanned = data.blacklistEnabled
+
+        for normalizedName, lastSeen in pairs(data.blacklist) do
+            local name, realm = strsplit('-', normalizedName, 2)
+            realm = realm:gsub('[%- ]', '')
+            normalizedName = name .. '-' .. realm
+
+            if not data.bannedPlayers[normalizedName] then
+                data.bannedPlayers[normalizedName] = lastSeen
+                data.numberOfBannedPlayers = data.numberOfBannedPlayers + 1
+            end
+        end
+
+        data.blacklist = nil
+        data.blacklistEnabled = nil
+    end,
+
+    [6] = function (data)
+        data.stats = nil
+        data.filterApplications = true
+    end,
+
+    [7] = function (data)
+        data.banButton = data.quickReport
+        data.quickReport = nil
+        data.report = nil
+        data.noVoice = false
+    end,
+
+    [8] = function (data)
+        data.reportHelper = true
+        data.reportHelperTipShown = false
+    end,
+
+    [9] = function (data)
+        data.filterApplications = nil
+        data.lastMaintenance = 0
+        data.buttonTipShown = false
+    end,
+
+    [10] = function (data)
+        data.openReportWindow = data.reportHelper
+        data.reportHelper = nil
+        data.reportHelperTipShown = nil
+    end,
+
+    [11] = function (data)
+        data.filterMode = addon.const.filterModes.Default
+        data.noVoice = nil
+    end,
+
+    [12] = function (data)
+        data.noCarry = true
+    end,
+}

@@ -1,6 +1,9 @@
-local _, addon = ...
-local options = addon.module('ui', 'options')
+---@class Addon
+local addon = select(2, ...)
+local options = addon.module()
+addon.ui.options = options
 
+---@param open boolean?
 function options.toggle(open)
     if open == nil then
         open = not options.isOpen()
@@ -9,6 +12,7 @@ function options.toggle(open)
     LFGSpamFilter_Options:SetShown(open)
 end
 
+---@return boolean
 function options.isOpen()
     return LFGSpamFilter_Options:IsShown()
 end
@@ -28,6 +32,9 @@ function options.load()
     else
         LFGSpamFilter_Options.MaxAge.EditBox:SetText('')
     end
+
+    -- hide carries
+    LFGSpamFilter_Options.NoCarry.Checkbox:SetChecked(addon.config.db.noCarry)
 
     -- ban button
     LFGSpamFilter_Options.BanButton.Checkbox:SetChecked(addon.config.db.banButton)
@@ -55,6 +62,9 @@ function options.apply()
     else
         addon.config.db.maxAge = nil
     end
+
+    -- hide carries
+    addon.config.db.noCarry = LFGSpamFilter_Options.NoCarry.Checkbox:GetChecked()
 
     -- ban button
     addon.config.db.banButton = LFGSpamFilter_Options.BanButton.Checkbox:GetChecked()

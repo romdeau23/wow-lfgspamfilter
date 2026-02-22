@@ -1,9 +1,5 @@
-<Ui
-    xmlns="http://www.blizzard.com/wow/ui/"
-    xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd"
->
-    <!-- TEMPLATES -->
+<Ui>
+    <!-- templates -->
     <Frame name="LFGSpamFilter_OptionsRowTemplate" virtual="true">
         <Size x="168" y="23"/>
 
@@ -35,9 +31,9 @@
         </Anchors>
     </Frame>
 
-    <!-- OPTIONS FRAME -->
+    <!-- options frame -->
     <Frame name="LFGSpamFilter_Options" parent="UIParent" enableMouse="true" hidden="true" inherits="TooltipBackdropTemplate" frameStrata="DIALOG">
-        <Size x="192" y="333"/>
+        <Size x="192" y="355"/>
 
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="LFGSpamFilter_StatusButton" x="0" y="1"/>
@@ -73,7 +69,7 @@
                     <Size x="0" y="10"/>
 
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-114"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-136"/>
                     </Anchors>
                 </FontString>
 
@@ -81,7 +77,7 @@
                     <Size x="0" y="10"/>
 
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-182"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-204"/>
                     </Anchors>
                 </FontString>
 
@@ -89,7 +85,7 @@
                     <Size x="0" y="10"/>
 
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-254"/>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="18" y="-276"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -117,11 +113,13 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
+                        local filterModes = LFGSpamFilterAddon.const.filterModes
+
                         local options = {
-                            {value = LFGSpamFilterAddon.FilterMode.Default, label = 'default', descr = 'Filter out groups with a leader who has 0 M+ score and also voice chat filled in.\nTypically, all of these are spam groups.'},
-                            {value = LFGSpamFilterAddon.FilterMode.RequireNoVoice, label = 'no voice chat', descr = 'Filter out groups with voice chat filled in.\nThis can include legitimate groups.'},
-                            {value = LFGSpamFilterAddon.FilterMode.RequireScore, label = 'require score', descr = 'Filter out groups with a leader who has 0 M+ score.\nThis can include legitimate groups.'},
-                            {value = LFGSpamFilterAddon.FilterMode.None, label = 'none', descr = 'No additional filtering'},
+                            {value = filterModes.Default, label = 'default', descr = 'Filter out groups with a leader who has 0 M+ score and also voice chat filled in.\nTypically, all of these are spam groups.'},
+                            {value = filterModes.RequireNoVoice, label = 'no voice chat', descr = 'Filter out groups with voice chat filled in.\nThis can include legitimate groups.'},
+                            {value = filterModes.RequireScore, label = 'require score', descr = 'Filter out groups with a leader who has 0 M+ score.\nThis can include legitimate groups.'},
+                            {value = filterModes.None, label = 'none', descr = 'No additional filtering'},
                         }
 
                         local function getOption(v)
@@ -134,7 +132,7 @@
                             error('Invalid option value ' .. v)
                         end
 
-                        local value = LFGSpamFilterAddon.FilterMode.Default
+                        local value = filterModes.Default
 
                         function self:SetValue(v)
                             value = v
@@ -197,13 +195,27 @@
                 </Frames>
             </Frame>
 
+            <Frame parentKey="NoCarry" inherits="LFGSpamFilter_OptionsRowTemplate">
+                <KeyValues>
+                    <KeyValue key="label" value="filter carry groups"/>
+                </KeyValues>
+
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-104"/>
+                </Anchors>
+
+                <Frames>
+                    <CheckButton parentKey="Checkbox" inherits="LFGSpamFilter_OptionsCheckboxTemplate"/>
+                </Frames>
+            </Frame>
+
             <Frame parentKey="BanButton" inherits="LFGSpamFilter_OptionsRowTemplate">
                 <KeyValues>
                     <KeyValue key="label" value="show ban button"/>
                 </KeyValues>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-128"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-150"/>
                 </Anchors>
 
                 <Frames>
@@ -223,7 +235,7 @@
                 </KeyValues>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-150"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-172"/>
                 </Anchors>
 
                 <Frames>
@@ -237,7 +249,7 @@
                 </KeyValues>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-196"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-218"/>
                 </Anchors>
 
                 <Frames>
@@ -249,7 +261,7 @@
                 <Size x="73" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-222"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-244"/>
                 </Anchors>
 
                 <Scripts>
@@ -267,7 +279,7 @@
                 <Size x="73" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-222"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-244"/>
                 </Anchors>
 
                 <Scripts>
@@ -285,7 +297,7 @@
                 <Size x="73" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-268"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-290"/>
                 </Anchors>
 
                 <Scripts>
@@ -303,7 +315,7 @@
                 <Size x="30" y="20"/>
 
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-268"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="100" y="-290"/>
                 </Anchors>
 
                 <Scripts>

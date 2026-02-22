@@ -1,5 +1,8 @@
-local _, addon = ...
-local statusButton, private = addon.module('ui', 'statusButton'), {}
+---@class Addon
+local addon = select(2, ...)
+local statusButton, private = addon.module(), {}
+addon.ui.statusButton = statusButton
+
 local usageHint = DISABLED_FONT_COLOR_CODE .. '(left click for options, right to toggle, middle to invert)|r'
 
 function statusButton.init()
@@ -19,6 +22,9 @@ function statusButton.init()
     LFGSpamFilter_StatusButton:Show()
 end
 
+---@param acceptedCount integer
+---@param rejectedCount integer
+---@param isInverted boolean
 function statusButton.updateActive(acceptedCount, rejectedCount, isInverted)
     private.maybeShowButtonTip()
 
@@ -78,6 +84,7 @@ function statusButton.updateInactive()
     )
 end
 
+---@param button string
 function statusButton.onClick(button)
     if button == 'LeftButton' then
         -- toggle options on left click

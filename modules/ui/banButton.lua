@@ -1,5 +1,9 @@
-local _, addon = ...
-local banButton, private = addon.module('ui', 'banButton'), {}
+---@class Addon
+local addon = select(2, ...)
+local banButton, private = addon.module(), {}
+addon.ui.banButton = banButton
+
+---@type table<table, true>
 local hookedEntries = {}
 
 function banButton.init()
@@ -11,6 +15,7 @@ function banButton.hide()
     LFGSpamFilter_BanButton:Hide()
 end
 
+---@param button string
 function banButton.onClick(button)
     local resultId = LFGSpamFilter_BanButton.resultId
 
@@ -35,14 +40,16 @@ function banButton.onClick(button)
     PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
+---@param entry table
 function private.onLfgSearchEntryUpdate(entry)
-    if hookedEntries[entry] == nil then
+    if not hookedEntries[entry] then
         entry:HookScript('OnEnter', private.onLfgSearchEntryEnter)
         entry:HookScript('OnLeave', private.onLfgSearchEntryLeave)
         hookedEntries[entry] = true
     end
 end
 
+---@param entry table
 function private.onLfgSearchEntryEnter(entry)
     if
         addon.config.db.banButton

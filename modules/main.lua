@@ -1,5 +1,12 @@
-local _, addon = ...
-local main, private = addon.module('main'), {}
+---@class Addon
+local addon = select(2, ...)
+local main, private = addon.module(), {}
+addon.main = main
+
+local config = addon.config
+local ui = addon.ui
+local tempBan = addon.tempBan
+local filterModes = addon.const.filterModes
 local invertFilter = false
 
 function main.init()
@@ -7,44 +14,49 @@ function main.init()
     hooksecurefunc(C_ReportSystem, 'SendReport', private.onReport)
 end
 
+---@param name string
+---@param temporary boolean
 function main.banPlayer(name, temporary)
     name = private.normalizePlayerName(name)
 
     if temporary then
-        addon.tempBan.ban(name)
+        tempBan.ban(name)
     else
-        addon.config.banPlayer(name)
+        config.banPlayer(name)
     end
 
-    addon.ui.updateLfgResults()
+    ui.updateLfgResults()
 
-    if addon.ui.options.isOpen() then
-        addon.ui.options.updateState()
+    if ui.options.isOpen() then
+        ui.options.updateState()
     end
 end
 
+---@param enabled boolean
 function main.setInvertFilter(enabled)
     invertFilter = enabled
 end
 
+---@return boolean
 function main.isFilterInverted()
     return invertFilter
 end
 
+---@param frame table
 function private.filter(frame)
     -- do nothing if LFG search is not open
-    if not addon.ui.isLfgSearchOpen() then
+    if not ui.isLfgSearchOpen() then
         return
     end
 
     -- check ignored categories
-    if addon.config.isIgnoredCategory(addon.ui.getCurrentLfgCategory()) then
-        addon.ui.statusButton.updateInactive()
+    if config.isIgnoredCategory(ui.getCurrentLfgCategory()) then
+        ui.statusButton.updateInactive()
         return
     end
 
     -- filter results
-    local acceptedCount, rejectedCount = private.filterTable(frame.results, function (resultId)
+    local numAccepted, numRejected = private.filterTable(frame.results, function (resultId)
         local info = C_LFGList.GetSearchResultInfo(resultId)
 
         if info then
@@ -61,87 +73,102 @@ function private.filter(frame)
     end)
 
     -- handle results
-    LFGListFrame.SearchPanel.totalResults = acceptedCount
-    addon.ui.statusButton.updateActive(acceptedCount, rejectedCount, invertFilter)
+    LFGListFrame.SearchPanel.totalResults = numAccepted
+    ui.statusButton.updateActive(numAccepted, numRejected, invertFilter)
 
     -- hide start group button so it doesn't overlap the entries (blizz bug)
-    if acceptedCount > 0 then
+    if numAccepted > 0 then
         LFGListFrame.SearchPanel.ScrollBox.StartGroupButton:SetShown(false)
     end
 end
 
-function private.filterTable(input, callback)
+---@generic T
+---@param tbl T[]
+---@param callback fun(T):boolean
+---@return integer numAccepted
+---@return integer numRejected
+function private.filterTable(tbl, callback)
     local output = {}
-    local inputCount = #input
-    local outputCount = 0
+    local tblCount = #tbl
+    local numAccepted = 0
 
-    for i = 1, inputCount do
-        local item = input[i]
+    for i = 1, tblCount do
+        local item = tbl[i]
 
         if callback(item) then
-            outputCount = outputCount + 1
-            output[outputCount] = item
+            numAccepted = numAccepted + 1
+            output[numAccepted] = item
         end
     end
 
-    local filteredCount = inputCount - outputCount
+    local numRejected = tblCount - numAccepted
 
-    if filteredCount > 0 then
-        table.wipe(input)
+    if numRejected > 0 then
+        table.wipe(tbl)
 
-        for i = 1, outputCount do
-            input[i] = output[i]
+        for i = 1, numAccepted do
+            tbl[i] = output[i]
         end
     end
 
-    return outputCount, filteredCount
+    return numAccepted, numRejected
 end
 
+---@param info LfgSearchResultData
+---@return boolean
 function private.accept(info)
-    if addon.config.db.maxAge ~= nil and info.age > addon.config.db.maxAge then
+    if config.db.maxAge and info.age > config.db.maxAge then
         return false -- max age exceeded
     end
 
-    if addon.config.db.filterMode == addon.FilterMode.Default then
+    if config.db.filterMode == filterModes.Default then
         if (info.leaderOverallDungeonScore or 0) == 0 and info.voiceChat ~= '' then
             return false -- no score + filled out voice chat
         end
-    elseif  addon.config.db.filterMode == addon.FilterMode.RequireNoVoice then
+    elseif config.db.filterMode == filterModes.RequireNoVoice then
         if info.voiceChat ~= '' then
             return false -- voice chat filled
         end
-    elseif  addon.config.db.filterMode == addon.FilterMode.RequireScore then
+    elseif  config.db.filterMode == filterModes.RequireScore then
         if (info.leaderOverallDungeonScore or 0) == 0 then
             return false -- no score
         end
     end
 
-    if info.leaderName ~= nil then
+    if info.leaderName then
         local leaderName = private.normalizePlayerName(info.leaderName)
 
-        if addon.config.db.filterBanned and addon.config.isBannedPlayer(leaderName) then
+        if config.db.filterBanned and config.isBannedPlayer(leaderName) then
             return false -- banned player
         end
 
-        if addon.tempBan.isBanned(leaderName) then
+        if tempBan.isBanned(leaderName) then
             return false -- temp banned player
         end
+    end
+
+    if config.db.noCarry and info.generalPlaystyle == Enum.LFGEntryGeneralPlaystyle.Expert then
+        return false -- "carry offered"
     end
 
     -- all ok
     return true
 end
 
+---@param name string
+---@return string
 function private.normalizePlayerName(name)
     local dashPos = string.find(name, '-', 1, true)
 
-    if dashPos == nil then
+    if not dashPos then
         name = name .. '-' .. GetNormalizedRealmName()
     end
 
     return name
 end
 
+---@param reportInfo table see ReportInfoMixin
+---@param reportPlayerLocation unknown unused
 function private.onReport(reportInfo, reportPlayerLocation)
     if
         reportInfo.reportType == Enum.ReportType.GroupFinderPosting
