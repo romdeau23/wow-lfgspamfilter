@@ -6,19 +6,15 @@ addon.ui.statusButton = statusButton
 local usageHint = DISABLED_FONT_COLOR_CODE .. '(left click for options, right to toggle, middle to invert)|r'
 
 function statusButton.init()
-    local statusButtonLeftOffset = 0
+    local statusButtonXOffset = -3
 
     if C_AddOns.IsAddOnLoaded('PremadeGroupsFilter') then
-        statusButtonLeftOffset = statusButtonLeftOffset - 65
-    end
-
-    if C_AddOns.IsAddOnLoaded('WorldQuestTracker') then
-        statusButtonLeftOffset = statusButtonLeftOffset - 75
+        statusButtonXOffset = statusButtonXOffset - 65
     end
 
     LFGSpamFilter_StatusButton.tooltip = ''
     LFGSpamFilter_StatusButton:SetParent(LFGListFrame.SearchPanel)
-    LFGSpamFilter_StatusButton:SetPoint('TOPRIGHT', LFGListFrame.SearchPanel, 'TOPRIGHT', -44 + statusButtonLeftOffset, -25)
+    LFGSpamFilter_StatusButton:SetPoint('TOPRIGHT', LFGListFrame.SearchPanel, 'TOPRIGHT', statusButtonXOffset, -25)
     LFGSpamFilter_StatusButton:Show()
 end
 

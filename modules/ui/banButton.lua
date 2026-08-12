@@ -64,7 +64,7 @@ function private.onLfgSearchEntryEnter(entry)
 end
 
 function private.onLfgSearchEntryLeave()
-    if addon.config.db.banButton and not MouseIsOver(LFGSpamFilter_BanButton, 5, -5, 5, 5) then
+    if addon.config.db.banButton and not LFGSpamFilter_BanButton:IsMouseOver(5, -5, 5, 5) then
         banButton.hide()
     end
 end
