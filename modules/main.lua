@@ -12,17 +12,22 @@ local invertFilter = false
 function main.init()
     hooksecurefunc('LFGListUtil_SortSearchResults', private.filter)
     hooksecurefunc(C_ReportSystem, 'SendReport', private.onReport)
+    hooksecurefunc(C_LFGList, 'ReportGroupAsAdvertisement', private.onAdReport)
 end
 
 ---@param name string
 ---@param temporary boolean
 function main.banPlayer(name, temporary)
-    name = private.normalizePlayerName(name)
+    local normalizedName = private.normalizePlayerName(name)
+
+    if not normalizedName then
+        return
+    end
 
     if temporary then
-        tempBan.ban(name)
+        tempBan.ban(normalizedName)
     else
-        config.banPlayer(name)
+        config.banPlayer(normalizedName)
     end
 
     ui.updateLfgResults()
@@ -138,12 +143,14 @@ function private.accept(info)
     if info.leaderName then
         local leaderName = private.normalizePlayerName(info.leaderName)
 
-        if config.db.filterBanned and config.isBannedPlayer(leaderName) then
-            return false -- banned player
-        end
+        if leaderName then
+            if config.db.filterBanned and config.isBannedPlayer(leaderName) then
+                return false -- banned player
+            end
 
-        if tempBan.isBanned(leaderName) then
-            return false -- temp banned player
+            if tempBan.isBanned(leaderName) then
+                return false -- temp banned player
+            end
         end
     end
 
@@ -156,12 +163,18 @@ function private.accept(info)
 end
 
 ---@param name string
----@return string
+---@return string?
 function private.normalizePlayerName(name)
     local dashPos = string.find(name, '-', 1, true)
 
     if not dashPos then
-        name = name .. '-' .. GetNormalizedRealmName()
+        local currentRealmName = GetNormalizedRealmName()
+
+        if not currentRealmName then
+            return nil -- might be unavailable during loading screens
+        end
+
+        name = name .. '-' .. currentRealmName
     end
 
     return name
@@ -178,5 +191,14 @@ function private.onReport(reportInfo, reportPlayerLocation)
         and ReportFrame.playerName
     then
         main.banPlayer(ReportFrame.playerName, false)
+    end
+end
+
+---@param searchResultId number
+function private.onAdReport(searchResultId)
+    local info = C_LFGList.GetSearchResultInfo(searchResultId)
+
+    if info and info.leaderName then
+        main.banPlayer(info.leaderName, false)
     end
 end
