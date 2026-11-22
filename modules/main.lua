@@ -6,7 +6,6 @@ addon.main = main
 local config = addon.config
 local ui = addon.ui
 local tempBan = addon.tempBan
-local filterModes = addon.const.filterModes
 local invertFilter = false
 
 function main.init()
@@ -124,20 +123,6 @@ end
 function private.accept(info)
     if config.db.maxAge and info.age > config.db.maxAge then
         return false -- max age exceeded
-    end
-
-    if config.db.filterMode == filterModes.Default then
-        if (info.leaderOverallDungeonScore or 0) == 0 and info.voiceChat ~= '' then
-            return false -- no score + filled out voice chat
-        end
-    elseif config.db.filterMode == filterModes.RequireNoVoice then
-        if info.voiceChat ~= '' then
-            return false -- voice chat filled
-        end
-    elseif  config.db.filterMode == filterModes.RequireScore then
-        if (info.leaderOverallDungeonScore or 0) == 0 then
-            return false -- no score
-        end
     end
 
     if info.leaderName then

@@ -7,7 +7,8 @@ This small addon will help you combat spam in the LFG tool.
 Features
 ********
 
-- multiple filtering modes (the default mode should catch most spam groups)
+- filtering "carry offered" groups
+- filtering groups by age
 - filtering groups from previously reported and/or banned players
 - temporary player bans
 
@@ -67,11 +68,3 @@ Why do I have to report groups manually?
 Since 11.0 it is mostly impossible for addons to interact with the report window without breaking it.
 
 By default, when banning a group, the report window will be opened for you. This can be disabled in options.
-
-
-Known issues
-************
-
-- "Report Advertisement" context menu option doesn't always work (or it just opens the report window) - this is
-  caused by UI taint from group filtering and is not currently fixable; use the "Report Group" option or let this
-  addon open the report window for you (this is enabled by default)

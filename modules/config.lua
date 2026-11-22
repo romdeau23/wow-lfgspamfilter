@@ -15,7 +15,6 @@ local DEFAULT_CONFIG = {
     lastMaintenance = time(),
     buttonTipShown = false,
     openReportWindow = true,
-    filterMode = addon.const.filterModes.Default,
     noCarry = true,
 }
 
@@ -30,14 +29,13 @@ local DEFAULT_CONFIG = {
 ---@field lastMaintenance integer
 ---@field buttonTipShown boolean
 ---@field openReportWindow boolean
----@field filterMode FilterMode
 ---@field noCarry boolean
 
 function config.init()
     ---@type ConfigModule.Config
     config.db = addon.loadSavedVar(
         'LFGSpamFilterAddonConfig',
-        12,
+        13,
         DEFAULT_CONFIG,
         private.migrations
     )
@@ -203,11 +201,15 @@ private.migrations = {
     end,
 
     [11] = function (data)
-        data.filterMode = addon.const.filterModes.Default
+        data.filterMode = 1 -- Default
         data.noVoice = nil
     end,
 
     [12] = function (data)
         data.noCarry = true
+    end,
+
+    [13] = function (data)
+        data.filterMode = nil
     end,
 }
